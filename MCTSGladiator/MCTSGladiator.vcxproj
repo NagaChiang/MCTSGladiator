@@ -91,11 +91,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Dll.cpp" />
-    <ClCompile Include="Source\MCTSGladiator.cpp" />
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="Combat.cpp" />
+    <ClCompile Include="Dll.cpp" />
+    <ClCompile Include="MCTSGladiator.cpp" />
+    <ClCompile Include="State.cpp" />
+    <ClCompile Include="UnitState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\MCTSGladiator.h" />
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="Combat.h" />
+    <ClInclude Include="MCTSGladiator.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="UnitState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
