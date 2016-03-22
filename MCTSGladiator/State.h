@@ -1,17 +1,23 @@
 #pragma once
 #include <BWAPI.h>
 #include <vector>
-#include "UnitState.h"
+#include "Unit.h"
 
-class State
+namespace MCTSG
 {
+	class State
+	{
 
-public:
+	public:
 
-	int t; // current time frame
-	std::vector<UnitState*> allyUnits;
-	std::vector<UnitState*> enemyUnits;
+		int time; // current time frame
+		std::vector<Unit> allyUnits;
+		std::vector<Unit> enemyUnits;
 
-	State();
+		State();
 
-};
+		void set(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
+		void clear();
+
+	};
+}

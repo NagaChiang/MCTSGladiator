@@ -1,16 +1,19 @@
 #pragma once
 #include <BWAPI.h>
-#include "UnitState.h"
+#include "Unit.h"
 
-class Action
+namespace MCTSG
 {
+	class Action
+	{
 
-public:
+	public:
 
-	UnitState *unit; // unit to perform the action
-	BWAPI::UnitCommandType actionType; // type of action
-	UnitState *target; // target
-	int t; // e.g. wait until time t 
+		Unit *unit; // unit to perform the action
+		BWAPI::UnitCommandType actionType; // type of action
+		Unit *target; // target
+		int t; // e.g. wait until time t 
 
-	Action();
-};
+		Action();
+	};
+}
