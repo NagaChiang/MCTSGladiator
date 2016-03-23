@@ -14,10 +14,18 @@ void CombatManager::init(const int t, const BWAPI::Unitset &allies, const BWAPI:
 {
 	// set new state
 	currentState.set(t, allies, enemies);
+
+	// log init state
+	logger.log("CombatManager has been initiated!");
+	logger.logState(currentState);
 }
 
-// update the real state for manager; track on status of units, such as attack CD
+// update the real state for manager; also track on status of units, such as attack CD
 void CombatManager::update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
 {
-	
+	// update state
+	currentState.update(t, allies, enemies);
+
+	// debug
+	//logger.logState(currentState);
 }

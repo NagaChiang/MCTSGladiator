@@ -79,9 +79,10 @@ void Logger::logState(const State &state)
 
 	// ally units
 	fprintf(fptrLog, "\tAlly Units (%d):\n", state.allyUnits.size()); // title
-	for(Unit unit : state.allyUnits)
+	for(const Unit &unit : state.allyUnits)
 	{
-		fprintf(fptrLog, "\t\t%-20s (%4d,%4d) %4d %5d %5d\n",
+		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
+			unit.ID,
 			unit.unitType.toString().c_str(),
 			unit.position.x, unit.position.y,
 			unit.hitPoints,
@@ -92,9 +93,10 @@ void Logger::logState(const State &state)
 
 	// enemy units
 	fprintf(fptrLog, "\tEnemy Units (%d):\n", state.enemyUnits.size()); // title
-	for(Unit unit : state.enemyUnits)
+	for(const Unit &unit : state.enemyUnits)
 	{
-		fprintf(fptrLog, "\t\t%-20s (%4d,%4d) %4d %5d %5d\n",
+		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
+			unit.ID,
 			unit.unitType.toString().c_str(),
 			unit.position.x, unit.position.y,
 			unit.hitPoints,

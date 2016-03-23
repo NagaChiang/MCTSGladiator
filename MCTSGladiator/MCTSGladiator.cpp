@@ -78,32 +78,8 @@ void MCTSGladiator::onFrame()
 		return;
 
 	// update new information for combat manager
-	// TODO
+	combatMgr.update(Broodwar->getFrameCount(), Broodwar->self()->getUnits(), Broodwar->enemy()->getUnits());
 
-
-	/*
-	// Iterate through all the units that we own
-	for(auto &u : Broodwar->self()->getUnits())
-	{
-		// Ignore the unit if it no longer exists
-		// Make sure to include this block when handling any Unit pointer!
-		if(!u->exists())
-			continue;
-
-		// Ignore the unit if it has one of the following status ailments
-		if(u->isLockedDown() || u->isMaelstrommed() || u->isStasised())
-			continue;
-
-		// Ignore the unit if it is in one of the following states
-		if(u->isLoaded() || !u->isPowered() || u->isStuck())
-			continue;
-
-		// Ignore the unit if it is incomplete or busy constructing
-		if(!u->isCompleted() || u->isConstructing())
-			continue;
-
-	} // closure: unit iterator
-	*/
 }
 
 void MCTSGladiator::onSendText(std::string text)

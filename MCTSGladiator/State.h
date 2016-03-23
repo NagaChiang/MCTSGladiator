@@ -16,8 +16,11 @@ namespace MCTSG
 
 		State();
 
-		void set(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
 		void clear();
+		void set(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
+		void setUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset);
+		void update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
+		void updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset);
 
 	};
 }
