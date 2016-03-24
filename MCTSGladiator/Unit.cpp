@@ -29,10 +29,6 @@ void Unit::update(const BWAPI::Unit &unit)
 	{
 		position = unit->getPosition();
 		hitPoints = unit->getHitPoints() + unit->getShields();
-
-		// dead (but still has shields)
-		//if(unit->getHitPoints() <= 0)
-			//hitPoints = 0;
 	}
 }
 

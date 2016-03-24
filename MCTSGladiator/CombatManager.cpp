@@ -25,7 +25,4 @@ void CombatManager::update(const int t, const BWAPI::Unitset &allies, const BWAP
 {
 	// update state
 	currentState.update(t, allies, enemies);
-
-	// debug
-	//logger.logState(currentState);
 }

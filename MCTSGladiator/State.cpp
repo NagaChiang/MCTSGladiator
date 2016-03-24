@@ -56,8 +56,7 @@ void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &units
 {
 	// update new units status from real state (except for tAttack, tMove)
 	for(std::vector<Unit>::iterator itr = vecUnits.begin();
-		itr != vecUnits.end();
-		itr++)
+		itr != vecUnits.end(); /* nothing */)
 	{
 		bool isFound = false;
 		for(auto &real_u : unitset)
@@ -66,6 +65,7 @@ void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &units
 			{
 				itr->update(real_u);
 				isFound = true;
+				itr++;
 				break;
 			}
 		}
@@ -74,7 +74,7 @@ void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &units
 		if(!isFound)
 		{
 			// remove it from the vector
-			//vecUnits.erase(itr); // TODO: bug
+			itr = vecUnits.erase(itr); // next element after erased one
 		}
 	}
 }
