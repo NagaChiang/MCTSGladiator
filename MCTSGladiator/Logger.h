@@ -16,8 +16,8 @@ namespace MCTSG
 
 		void init(const std::string &path);
 
-		void log(const std::string &str);
-		void logState(const State &state);
+		void log(const std::string &str); // std::string
+		void log(const State &state); // state
 
 	private:
 

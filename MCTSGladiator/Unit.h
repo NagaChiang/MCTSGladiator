@@ -6,8 +6,6 @@ namespace MCTSG
 	class Unit
 	{
 
-	public:
-
 		int ID;
 		BWAPI::UnitType unitType; // type of this unit
 		BWAPI::Position position; // current position
@@ -15,11 +13,13 @@ namespace MCTSG
 		int tAttack; // next time frame can attack
 		int tMove; // next time frame can move
 
+	public:
+
 		Unit();
 		Unit(const BWAPI::Unit &unit);
 
 		void update(const BWAPI::Unit &unit);
 
-		bool isAlive();
+		bool isAlive() const;
 	};
 }

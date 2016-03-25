@@ -61,7 +61,7 @@ void Logger::log(const std::string &str)
 }
 
 // log a state
-void Logger::logState(const State &state)
+void Logger::log(const State &state)
 {
 	// if not initiated
 	if(!fptrLog)

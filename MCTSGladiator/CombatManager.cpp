@@ -3,7 +3,7 @@
 using namespace MCTSG;
 
 CombatManager::CombatManager()
-	:logPath("D:/Phate/Temp/Thesis/MCTSGladiator/Release/combatLog.txt")
+	:logPath("D:/Phate/Temp/Thesis/MCTSGladiator/Release/CombatManagerLog.txt")
 {
 	currentState = State();
 	logger.init(logPath);
@@ -17,10 +17,11 @@ void CombatManager::init(const int t, const BWAPI::Unitset &allies, const BWAPI:
 
 	// log init state
 	logger.log("CombatManager has been initiated!");
-	logger.logState(currentState);
+	logger.log(currentState);
 }
 
 // update the real state for manager; also track on status of units, such as attack CD
+// perform UCT search and issue the commands
 void CombatManager::update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
 {
 	// update state

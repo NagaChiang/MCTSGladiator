@@ -27,6 +27,25 @@ void State::set(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset 
 	setUnits(enemyUnits, enemies);
 }
 
+void State::update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
+{
+	// new time frame
+	time = t;
+
+	// update unitsets
+	updateUnits(allyUnits, allies);
+	updateUnits(enemyUnits, enemies);
+}
+
+// is game over? (in combat scenario)
+bool State::isEnd() const
+{
+	if(allyUnits.size() == 0 || enemyUnits.size() == 0)
+		return true;
+	else
+		return false;
+}
+
 void State::setUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset)
 {
 	for(auto &u : unitset) // enemy
@@ -40,16 +59,6 @@ void State::setUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset)
 			vecUnits.push_back(unit);
 		}
 	}
-}
-
-void State::update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
-{
-	// new time frame
-	time = t;
-
-	// update unitsets
-	updateUnits(allyUnits, allies);
-	updateUnits(enemyUnits, enemies);
 }
 
 void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset)
@@ -70,7 +79,7 @@ void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &units
 			}
 		}
 
-		// not found, this unit is dead
+		// if not found, this unit is dead
 		if(!isFound)
 		{
 			// remove it from the vector

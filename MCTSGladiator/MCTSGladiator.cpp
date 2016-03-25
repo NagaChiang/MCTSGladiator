@@ -77,7 +77,7 @@ void MCTSGladiator::onFrame()
 	if(Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0)
 		return;
 
-	// update new information for combat manager
+	// update new information for CombatManager
 	combatMgr.update(Broodwar->getFrameCount(), Broodwar->self()->getUnits(), Broodwar->enemy()->getUnits());
 
 }

@@ -32,7 +32,7 @@ void Unit::update(const BWAPI::Unit &unit)
 	}
 }
 
-bool Unit::isAlive()
+bool Unit::isAlive() const
 {
 	if(hitPoints > 0)
 		return true;
