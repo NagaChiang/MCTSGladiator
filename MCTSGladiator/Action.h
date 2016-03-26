@@ -1,19 +1,23 @@
 #pragma once
 #include <BWAPI.h>
+#include <vector>
 #include "Unit.h"
 
 namespace MCTSG
 {
+	typedef std::vector<Action> Move;
+
 	class Action
 	{
 
+		int unitID; // ID of unit to perform the action
+		BWAPI::UnitCommandType actionType; // type of action
+		int targetID; // Id of target
+		int time; // e.g. wait until time t 
+
 	public:
 
-		Unit *unit; // unit to perform the action
-		BWAPI::UnitCommandType actionType; // type of action
-		Unit *target; // target
-		int t; // e.g. wait until time t 
-
 		Action();
+		Action(const int uID, const BWAPI::UnitCommandType &aType, const int tID, const int t);
 	};
 }

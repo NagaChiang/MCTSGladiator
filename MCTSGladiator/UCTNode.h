@@ -1,13 +1,16 @@
 #pragma once
 #include <BWAPI.h>
 #include "State.h"
+#include "Action.h"
 
 namespace MCTSG
 {
 	class UCTNode
 	{
 
-		State state;
+		Move move; // action vector
+		int visits, wins; // number of visits and wins
+		UCTNode *parent; // parent node
 
 	public:
 
