@@ -8,7 +8,7 @@ namespace MCTSG
 	class State
 	{
 
-		int time; // current time frame
+		int time; // current frame count
 		std::vector<Unit> allyUnits;
 		std::vector<Unit> enemyUnits;
 
@@ -21,6 +21,13 @@ namespace MCTSG
 		void update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
 
 		bool isEnd() const;
+
+		// getters
+		int getTimeCount() const { return time; };
+		int getAllyUnitsNum() const { return allyUnits.size(); };
+		int getEnemyUnitsNum() const { return enemyUnits.size(); };
+		std::vector<Unit> getAllyUnits() const { return allyUnits; };
+		std::vector<Unit> getEnemyUnits() const { return enemyUnits; };
 
 	private:
 

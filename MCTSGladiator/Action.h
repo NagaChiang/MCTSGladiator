@@ -5,8 +5,6 @@
 
 namespace MCTSG
 {
-	typedef std::vector<Action> Move;
-
 	class Action
 	{
 
@@ -20,4 +18,6 @@ namespace MCTSG
 		Action();
 		Action(const int uID, const BWAPI::UnitCommandType &aType, const int tID, const int t);
 	};
+
+	typedef std::vector<Action> Move;
 }

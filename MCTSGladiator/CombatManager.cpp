@@ -2,8 +2,10 @@
 
 using namespace MCTSG;
 
+const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/CombatManagerLog.txt";
+
 CombatManager::CombatManager()
-	:logPath("D:/Phate/Temp/Thesis/MCTSGladiator/Release/CombatManagerLog.txt")
+	:logPath(LOG_PATH)
 {
 	currentState = State();
 	logger.init(logPath);
@@ -26,4 +28,14 @@ void CombatManager::update(const int t, const BWAPI::Unitset &allies, const BWAP
 {
 	// update state
 	currentState.update(t, allies, enemies);
+
+	// UCT Search
+	UCTSearchParams params;
+	params.timeLimit = std::chrono::milliseconds(40);
+	params.maxChildren = 20;
+	params.explorationConst = 1.6;
+	UCTSearch UCT = UCTSearch(params);
+	Move bestMove = UCT.search(currentState);
+
+	// issue commands
 }

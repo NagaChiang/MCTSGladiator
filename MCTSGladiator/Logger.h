@@ -16,14 +16,18 @@ namespace MCTSG
 
 		void init(const std::string &path);
 
-		void log(const std::string &str); // std::string
-		void log(const State &state); // state
+		void log(const std::string &str) const; // std::string
+		void log(const State &state) const; // state
+		void log(const long long num) const; // big integer
 
 	private:
 
 		FILE *fptrLog;
 		std::string logPath;
 
-		void timestamp();
+		void timestamp() const;
+
+		// support functions
+		void logUnits(const std::vector<Unit> &units) const;
 	};
 }

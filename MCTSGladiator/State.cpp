@@ -70,7 +70,7 @@ void State::updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &units
 		bool isFound = false;
 		for(auto &real_u : unitset)
 		{
-			if(real_u->getID() == itr->ID)
+			if(real_u->getID() == itr->getID())
 			{
 				itr->update(real_u);
 				isFound = true;

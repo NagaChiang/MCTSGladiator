@@ -46,7 +46,7 @@ void Logger::init(const std::string &path)
 }
 
 // log a string with timestamp and newline
-void Logger::log(const std::string &str)
+void Logger::log(const std::string &str) const
 {
 	// if not initiated
 	if(!fptrLog)
@@ -61,11 +61,14 @@ void Logger::log(const std::string &str)
 }
 
 // log a state
-void Logger::log(const State &state)
+void Logger::log(const State &state) const
 {
 	// if not initiated
 	if(!fptrLog)
 		return;
+
+	// copy a state
+	State stateCopy = State(state);
 
 	// timestamp
 	timestamp();
@@ -74,40 +77,43 @@ void Logger::log(const State &state)
 	fprintf(fptrLog, "\n");
 	
 	// time frame
-	fprintf(fptrLog, "\tTime Frame = %d\n", state.time);
+	fprintf(fptrLog, "\tTime Frame = %d\n", stateCopy.getTimeCount());
 	fprintf(fptrLog, "\n");
 
 	// ally units
-	fprintf(fptrLog, "\tAlly Units (%d):\n", state.allyUnits.size()); // title
-	for(const Unit &unit : state.allyUnits)
-	{
-		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
-			unit.ID,
-			unit.unitType.toString().c_str(),
-			unit.position.x, unit.position.y,
-			unit.hitPoints,
-			unit.tAttack,
-			unit.tMove);
-	}
-	fprintf(fptrLog, "\n");
+	fprintf(fptrLog, "\tAlly Units (%d):\n", stateCopy.getAllyUnitsNum()); // title
+	logUnits(stateCopy.getAllyUnits());
 
 	// enemy units
-	fprintf(fptrLog, "\tEnemy Units (%d):\n", state.enemyUnits.size()); // title
-	for(const Unit &unit : state.enemyUnits)
+	fprintf(fptrLog, "\tEnemy Units (%d):\n", stateCopy.getEnemyUnitsNum()); // title
+	logUnits(stateCopy.getEnemyUnits());
+}
+
+// log an integer
+void Logger::log(const long long num) const
+{
+	timestamp();
+	fprintf(fptrLog, "%lld\n", num);
+}
+
+// support function of log state
+void Logger::logUnits(const std::vector<Unit> &units) const
+{
+	for(const Unit &unit : units)
 	{
 		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
-			unit.ID,
-			unit.unitType.toString().c_str(),
-			unit.position.x, unit.position.y,
-			unit.hitPoints,
-			unit.tAttack,
-			unit.tMove);
+			unit.getID(),
+			unit.getType().toString().c_str(),
+			unit.getPosition().x, unit.getPosition().y,
+			unit.getHitPoints(),
+			unit.getNextCanAttackFrame(),
+			unit.getNextCanMoveFrame());
 	}
 	fprintf(fptrLog, "\n");
 }
 
 // prefix for every log message
-void Logger::timestamp()
+void Logger::timestamp() const
 {
 	time_t now = time(0); // get current time
 	tm *timeStruct = localtime(&now); // convert to local time struct

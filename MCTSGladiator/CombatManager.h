@@ -3,6 +3,7 @@
 #include "State.h"
 #include "Unit.h"
 #include "Logger.h"
+#include "UCTSearch.h"
 
 namespace MCTSG
 {

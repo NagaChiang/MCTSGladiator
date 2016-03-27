@@ -21,5 +21,13 @@ namespace MCTSG
 		void update(const BWAPI::Unit &unit);
 
 		bool isAlive() const;
+
+		// getters
+		int getID() const { return ID; };
+		BWAPI::UnitType getType() const { return unitType; };
+		BWAPI::Position getPosition() const { return position; };
+		int getHitPoints() const { return hitPoints; };
+		int getNextCanAttackFrame() const { return tAttack; };
+		int getNextCanMoveFrame() const { return tMove; };
 	};
 }
