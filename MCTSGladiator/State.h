@@ -28,6 +28,7 @@ namespace MCTSG
 		int getEnemyUnitsNum() const { return enemyUnits.size(); };
 		std::vector<Unit> getAllyUnits() const { return allyUnits; };
 		std::vector<Unit> getEnemyUnits() const { return enemyUnits; };
+		Unit* getUnit(int ID); // get unit pointer by ID
 
 	private:
 

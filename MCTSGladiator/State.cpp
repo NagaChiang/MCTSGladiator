@@ -46,6 +46,37 @@ bool State::isEnd() const
 		return false;
 }
 
+// get unit by ID
+Unit* State::getUnit(int ID)
+{
+	Unit *unit = NULL; // return null if not found
+	bool isFound = false;
+	for(Unit &u : allyUnits)
+	{
+		if(u.getID() == ID)
+		{
+			unit = &u;
+			isFound = true;
+			break;
+		}
+	}
+
+	if(isFound) // if not in allies, keep searching
+	{
+		for(Unit &u : enemyUnits)
+		{
+			if(u.getID() == ID)
+			{
+				unit = &u;
+				isFound = true;
+				break;
+			}
+		}
+	}
+
+	return unit; // return null if not found
+}
+
 void State::setUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset)
 {
 	for(auto &u : unitset) // enemy
