@@ -1,6 +1,6 @@
 #pragma once
 #include <BWAPI.h>
-#include <vector>
+#include <stdexcept>
 #include "Unit.h"
 
 namespace MCTSG
@@ -9,32 +9,28 @@ namespace MCTSG
 	{
 
 		int time; // current frame count
-		std::vector<Unit> allyUnits;
-		std::vector<Unit> enemyUnits;
+		Unitset allUnits;
 
 	public:
 
 		State();
+		State(const int t, const BWAPI::Unitset &units);
+		~State();
 
 		void clear();
-		void set(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
-		void update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies);
+		void set(const int t, const BWAPI::Unitset &units);
+		void update(const int t, const BWAPI::Unitset &units);
 
 		bool isEnd() const;
 
 		// getters
 		int getTimeCount() const { return time; };
-		int getAllyUnitsNum() const { return allyUnits.size(); };
-		int getEnemyUnitsNum() const { return enemyUnits.size(); };
-		std::vector<Unit> getAllyUnits() const { return allyUnits; };
-		std::vector<Unit> getEnemyUnits() const { return enemyUnits; };
-		Unit* getUnit(int ID); // get unit pointer by ID
-
-	private:
-
-		// support functions
-		void setUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset);
-		void updateUnits(std::vector<Unit> &vecUnits, const BWAPI::Unitset &unitset);
-
+		int getUnitsNum() const { return allUnits.size(); };
+		int getAllyUnitsNum() const;
+		int getEnemyUnitsNum() const;
+		Unit getUnit(const int ID) const; // get unit (pointer) by ID
+		Unitset getUnits() const { return allUnits; };
+		Unitset getAllyUnits() const;
+		Unitset getEnemyUnits() const;
 	};
 }

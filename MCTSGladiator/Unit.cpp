@@ -2,9 +2,10 @@
 
 using namespace MCTSG;
 
-Unit::Unit()
+UnitInterface::UnitInterface()
 {
 	ID = -1;
+	ally = false;
 	unitType = BWAPI::UnitTypes::None;
 	position = BWAPI::Positions::None;
 	hitPoints = 0;
@@ -12,9 +13,10 @@ Unit::Unit()
 	tMove = 0;
 }
 
-Unit::Unit(const BWAPI::Unit &unit)
+UnitInterface::UnitInterface(const BWAPI::Unit &unit)
 {
 	ID = unit->getID();
+	ally = unit->getPlayer() == BWAPI::Broodwar->self() ? true : false;
 	unitType = unit->getType();
 	position = unit->getPosition();
 	hitPoints = unit->getHitPoints() + unit->getShields();
@@ -23,16 +25,16 @@ Unit::Unit(const BWAPI::Unit &unit)
 }
 
 // update status from real unit (except for tAttack, tMove)
-void Unit::update(const BWAPI::Unit &unit)
+void UnitInterface::update(const BWAPI::Unit &unit)
 {
-	if(ID == unit->getID())
+	if(ID == unit->getID()) // double check 
 	{
 		position = unit->getPosition();
 		hitPoints = unit->getHitPoints() + unit->getShields();
 	}
 }
 
-bool Unit::isAlive() const
+bool UnitInterface::isAlive() const
 {
 	if(hitPoints > 0)
 		return true;

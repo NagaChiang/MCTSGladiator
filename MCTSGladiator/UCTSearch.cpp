@@ -34,7 +34,7 @@ Move UCTSearch::search(const State &state) const
 	// get start timestamp
 	steady_clock::time_point startTime = steady_clock::now();
 
-	// traverse until time is up
+	// traverse until time out
 	while(true)
 	{
 
@@ -43,7 +43,7 @@ Move UCTSearch::search(const State &state) const
 		milliseconds duration = duration_cast<milliseconds>(curTime - startTime);
 		if(duration.count() >= params.timeLimit.count())
 		{
-			break;
+			break; // time out!
 		}
 	}
 

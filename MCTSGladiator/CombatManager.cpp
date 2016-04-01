@@ -11,11 +11,18 @@ CombatManager::CombatManager()
 	logger.init(logPath);
 }
 
+CombatManager::CombatManager(const int t, const BWAPI::Unitset &units)
+	:logPath(LOG_PATH)
+{
+	set(t, units);
+	logger.init(logPath);
+}
+
 // assumption: no more units would appear later
-void CombatManager::init(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
+void CombatManager::set(const int t, const BWAPI::Unitset &units)
 {
 	// set new state
-	currentState.set(t, allies, enemies);
+	currentState.set(t, units);
 
 	// log init state
 	logger.log("CombatManager has been initiated!");
@@ -24,10 +31,11 @@ void CombatManager::init(const int t, const BWAPI::Unitset &allies, const BWAPI:
 
 // update the real state for manager; also track on status of units, such as attack CD
 // perform UCT search and issue the commands
-void CombatManager::update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies)
+void CombatManager::update(const int t, const BWAPI::Unitset &units)
 {
 	// update state
-	currentState.update(t, allies, enemies);
+	currentState.update(t, units);
+	//logger.log(currentState); // debug
 
 	// UCT Search
 	UCTSearchParams params;

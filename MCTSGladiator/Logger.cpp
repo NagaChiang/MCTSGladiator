@@ -67,9 +67,6 @@ void Logger::log(const State &state) const
 	if(!fptrLog)
 		return;
 
-	// copy a state
-	State stateCopy = State(state);
-
 	// timestamp
 	timestamp();
 	fprintf(fptrLog, "\n");
@@ -77,16 +74,18 @@ void Logger::log(const State &state) const
 	fprintf(fptrLog, "\n");
 	
 	// time frame
-	fprintf(fptrLog, "\tTime Frame = %d\n", stateCopy.getTimeCount());
+	fprintf(fptrLog, "\tTime Frame = %d\n", state.getTimeCount());
 	fprintf(fptrLog, "\n");
 
 	// ally units
-	fprintf(fptrLog, "\tAlly Units (%d):\n", stateCopy.getAllyUnitsNum()); // title
-	logUnits(stateCopy.getAllyUnits());
+	fprintf(fptrLog, "\tAlly Units (%d):\n", state.getAllyUnitsNum()); // title
+	Unitset allyUnits = state.getAllyUnits();
+	logUnits(allyUnits);
 
 	// enemy units
-	fprintf(fptrLog, "\tEnemy Units (%d):\n", stateCopy.getEnemyUnitsNum()); // title
-	logUnits(stateCopy.getEnemyUnits());
+	fprintf(fptrLog, "\tEnemy Units (%d):\n", state.getEnemyUnitsNum()); // title
+	Unitset enemyUnits = state.getEnemyUnits();
+	logUnits(enemyUnits);
 }
 
 // log an integer
@@ -97,17 +96,18 @@ void Logger::log(const long long num) const
 }
 
 // support function of log state
-void Logger::logUnits(const std::vector<Unit> &units) const
+void Logger::logUnits(const Unitset &units) const
 {
-	for(const Unit &unit : units)
+	for(Unitset::const_iterator itr = units.begin(); itr != units.end(); itr++)
 	{
+		Unit unit = itr->second;
 		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
-			unit.getID(),
-			unit.getType().toString().c_str(),
-			unit.getPosition().x, unit.getPosition().y,
-			unit.getHitPoints(),
-			unit.getNextCanAttackFrame(),
-			unit.getNextCanMoveFrame());
+			unit->getID(),
+			unit->getType().toString().c_str(),
+			unit->getPosition().x, unit->getPosition().y,
+			unit->getHitPoints(),
+			unit->getNextCanAttackFrame(),
+			unit->getNextCanMoveFrame());
 	}
 	fprintf(fptrLog, "\n");
 }

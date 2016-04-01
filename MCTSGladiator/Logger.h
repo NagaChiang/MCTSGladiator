@@ -27,7 +27,7 @@ namespace MCTSG
 
 		void timestamp() const;
 
-		// support functions
-		void logUnits(const std::vector<Unit> &units) const;
+		// support function
+		void Logger::logUnits(const Unitset &units) const;
 	};
 }

@@ -46,7 +46,7 @@ void MCTSGladiator::onStart()
 			Broodwar << "The matchup is " << Broodwar->self()->getRace() << " vs " << Broodwar->enemy()->getRace() << std::endl;
 
 		// set units for combat manager
-		combatMgr.init(Broodwar->getFrameCount(), Broodwar->self()->getUnits(), Broodwar->enemy()->getUnits());
+		combatMgr.set(Broodwar->getFrameCount(), Broodwar->getAllUnits());
 	}
 
 }
@@ -78,7 +78,7 @@ void MCTSGladiator::onFrame()
 		return;
 
 	// update new information for CombatManager
-	combatMgr.update(Broodwar->getFrameCount(), Broodwar->self()->getUnits(), Broodwar->enemy()->getUnits());
+	combatMgr.update(Broodwar->getFrameCount(), Broodwar->getAllUnits());
 
 }
 

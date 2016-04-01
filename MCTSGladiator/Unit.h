@@ -1,12 +1,15 @@
 #pragma once
 #include <BWAPI.h>
+#include <map>
+#include <memory>
 
 namespace MCTSG
 {
-	class Unit
+	class UnitInterface
 	{
 
 		int ID;
+		bool ally; // is it ally?
 		BWAPI::UnitType unitType; // type of this unit
 		BWAPI::Position position; // current position
 		int hitPoints; // current HP
@@ -15,12 +18,13 @@ namespace MCTSG
 
 	public:
 
-		Unit();
-		Unit(const BWAPI::Unit &unit);
+		UnitInterface();
+		UnitInterface(const BWAPI::Unit &unit);
 
 		void update(const BWAPI::Unit &unit);
 
 		bool isAlive() const;
+		bool isAlly() const { return ally; };
 
 		// getters
 		int getID() const { return ID; };
@@ -30,4 +34,7 @@ namespace MCTSG
 		int getNextCanAttackFrame() const { return tAttack; };
 		int getNextCanMoveFrame() const { return tMove; };
 	};
+
+	typedef std::shared_ptr<UnitInterface> Unit;
+	typedef std::map<unsigned int, Unit> Unitset;
 }

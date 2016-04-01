@@ -18,8 +18,9 @@ namespace MCTSG
 	public:
 
 		CombatManager();
+		CombatManager(const int t, const BWAPI::Unitset &units);
 
-		void init(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies); // set at first
-		void update(const int t, const BWAPI::Unitset &allies, const BWAPI::Unitset &enemies); // update every frame
+		void set(const int t, const BWAPI::Unitset &units); // set at first
+		void update(const int t, const BWAPI::Unitset &units); // update every frame
 	};
 }
