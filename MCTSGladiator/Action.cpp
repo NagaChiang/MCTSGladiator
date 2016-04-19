@@ -4,16 +4,16 @@ using namespace MCTSG;
 
 Action::Action()
 {
-	unitID = -1;
+	unit = NULL;
 	actionType = BWAPI::UnitCommandTypes::None;
-	targetID = -1;
+	target = NULL;
 	time = -1;
 }
 
-Action::Action(const int uID, const BWAPI::UnitCommandType &aType, const int tID = -1, const int t = -1)
+Action::Action(const Unit &u, const BWAPI::UnitCommandType &aType, const Unit &uTarget = NULL, const int t = -1)
 {
-	unitID = uID;
+	unit = u;
 	actionType = aType;
-	targetID = tID;
+	target = uTarget;
 	time = t;
 }

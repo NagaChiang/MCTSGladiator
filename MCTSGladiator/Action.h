@@ -8,15 +8,21 @@ namespace MCTSG
 	class Action
 	{
 
-		int unitID; // ID of unit to perform the action
+		Unit unit; // unit to perform the action
 		BWAPI::UnitCommandType actionType; // type of action
-		int targetID; // Id of target
-		int time; // e.g. wait until time t 
+		Unit target; // target unit
+		int time; // e.g. wait until time frame
 
 	public:
 
 		Action();
-		Action(const int uID, const BWAPI::UnitCommandType &aType, const int tID, const int t);
+		Action(const Unit &u, const BWAPI::UnitCommandType &aType, const Unit &uTarget, const int t);
+
+		// getters
+		Unit getUnit() const { return unit; };
+		BWAPI::UnitCommandType getType() const { return actionType; };
+		Unit getTarget() const { return target; };
+		int getEndFrame() const { return time; };
 	};
 
 	typedef std::vector<Action> Move;

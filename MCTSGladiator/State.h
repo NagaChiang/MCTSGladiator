@@ -2,6 +2,7 @@
 #include <BWAPI.h>
 #include <stdexcept>
 #include "Unit.h"
+#include "Action.h"
 
 namespace MCTSG
 {
@@ -20,6 +21,7 @@ namespace MCTSG
 		void clear();
 		void set(const int t, const BWAPI::Unitset &units);
 		void update(const int t, const BWAPI::Unitset &units);
+		void makeMove(const Move move);
 
 		bool isEnd() const;
 

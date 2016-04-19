@@ -34,9 +34,14 @@ Move UCTSearch::search(const State &state) const
 	// get start timestamp
 	steady_clock::time_point startTime = steady_clock::now();
 
+	// create a new node to traverse
+	UCTNode root = UCTNode();
+
 	// traverse until time out
 	while(true)
 	{
+		// traverse
+		traverse(root, State(state));
 
 		// check time duration
 		steady_clock::time_point curTime = steady_clock::now();
@@ -51,12 +56,17 @@ Move UCTSearch::search(const State &state) const
 	return Move();
 }
 
-int UCTSearch::traverse(const State &state, const UCTNode &node) const
+int UCTSearch::traverse(const UCTNode &node, const State &state) const
 {
 
 }
 
 UCTNode UCTSearch::selectNode(const UCTNode &node) const
+{
+
+}
+
+void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) const
 {
 
 }

@@ -71,6 +71,16 @@ void State::update(const int t, const BWAPI::Unitset &units)
 	}
 }
 
+void State::makeMove(const Move move)
+{
+	// make actions in the move
+	for(const Action &action : move)
+	{
+		Unit unit = action.getUnit();
+		unit->command(action);
+	}
+}
+
 // is game over? (in combat scenario)
 bool State::isEnd() const
 {
@@ -101,9 +111,9 @@ Unit State::getUnit(const int ID) const
 int State::getAllyUnitsNum() const
 {
 	int num = 0;
-	for(Unitset::const_iterator itr = allUnits.begin(); itr != allUnits.end(); itr++)
+	for(const auto &itr : allUnits)
 	{
-		if(itr->second->isAlly())
+		if(itr.second->isAlly())
 			num++;
 	}
 
@@ -113,9 +123,9 @@ int State::getAllyUnitsNum() const
 int State::getEnemyUnitsNum() const
 {
 	int num = 0;
-	for(Unitset::const_iterator itr = allUnits.begin(); itr != allUnits.end(); itr++)
+	for(const auto &itr : allUnits)
 	{
-		if(!itr->second->isAlly())
+		if(!itr.second->isAlly())
 			num++;
 	}
 

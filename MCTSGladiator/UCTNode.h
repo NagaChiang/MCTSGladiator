@@ -15,5 +15,11 @@ namespace MCTSG
 	public:
 
 		UCTNode();
+
+		// getters
+		Move getMove() const { return move; };
+		int getNumVisits() const { return visits; };
+		int getNumWins() const { return wins; };
+		UCTNode* getParent() const { return parent; };
 	};
 }

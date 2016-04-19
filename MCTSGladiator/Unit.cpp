@@ -34,6 +34,11 @@ void UnitInterface::update(const BWAPI::Unit &unit)
 	}
 }
 
+void UnitInterface::command(const Action &action)
+{
+
+}
+
 bool UnitInterface::isAlive() const
 {
 	if(hitPoints > 0)

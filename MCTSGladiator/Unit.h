@@ -2,6 +2,7 @@
 #include <BWAPI.h>
 #include <map>
 #include <memory>
+#include "Action.h"
 
 namespace MCTSG
 {
@@ -23,10 +24,16 @@ namespace MCTSG
 
 		void update(const BWAPI::Unit &unit);
 
+		void command(const Action &action);
+		void attack(const Unit &target);
+		void move(const BWAPI::Position position);
+
 		bool isAlive() const;
 		bool isAlly() const { return ally; };
 
 		// getters
+		int getGroundWeaponCooldown() const { return unitType.groundWeapon().damageCooldown(); };
+
 		int getID() const { return ID; };
 		BWAPI::UnitType getType() const { return unitType; };
 		BWAPI::Position getPosition() const { return position; };
