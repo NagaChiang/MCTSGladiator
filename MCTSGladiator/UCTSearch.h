@@ -36,6 +36,7 @@ namespace MCTSG
 
 		// UCT search
 		int traverse(const UCTNode &node, const State &state) const; // traverse from state with node (i.e. move, actions)
+		void generateChildren(const UCTNode &node, const State &state) const; // generate new nodes from the node/state
 		UCTNode selectNode(const UCTNode &node) const; // select the best child of the node
 		void updateState(const UCTNode &node, State &state, bool isLeaf) const; // update state with moves of both players
 	};

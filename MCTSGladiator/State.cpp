@@ -77,7 +77,7 @@ void State::makeMove(const Move move)
 	for(const Action &action : move)
 	{
 		Unit unit = action.getUnit();
-		unit->command(action);
+		unit->doAction(action);
 	}
 }
 

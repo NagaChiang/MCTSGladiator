@@ -101,11 +101,12 @@ void Logger::logUnits(const Unitset &units) const
 	for(Unitset::const_iterator itr = units.begin(); itr != units.end(); itr++)
 	{
 		Unit unit = itr->second;
-		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %5d %5d\n",
+		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %4d %5d %5d\n",
 			unit->getID(),
 			unit->getType().toString().c_str(),
 			unit->getPosition().x, unit->getPosition().y,
 			unit->getHitPoints(),
+			unit->getShields(),
 			unit->getNextCanAttackFrame(),
 			unit->getNextCanMoveFrame());
 	}

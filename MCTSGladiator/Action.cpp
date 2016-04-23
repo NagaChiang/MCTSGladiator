@@ -5,12 +5,12 @@ using namespace MCTSG;
 Action::Action()
 {
 	unit = NULL;
-	actionType = BWAPI::UnitCommandTypes::None;
+	actionType = Actions::Pass;
 	target = NULL;
 	time = -1;
 }
 
-Action::Action(const Unit &u, const BWAPI::UnitCommandType &aType, const Unit &uTarget = NULL, const int t = -1)
+Action::Action(const Unit &u, const Actions &aType, const Unit &uTarget = NULL, const int t = -1)
 {
 	unit = u;
 	actionType = aType;
