@@ -37,32 +37,36 @@ void UnitInterface::update(const BWAPI::Unit &unit)
 	}
 }
 
-void UnitInterface::doAction(const Action &action)
+void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target)
 {
-	switch(action.getType())
+	// TODO: can attack?
+
+	// total damage by this unit
+	int totalDamage = getGroundWeaponDamage();
+	int remainDamage = totalDamage;
+
+	// shields take full damage
+	int targetShields = target->getShields();
+	if(targetShields < totalDamage) // not enough shields
 	{
-		case Actions::Stop:
-			// stop/wait at the same position
-			break;
+		targetShields = 0;
+		remainDamage = totalDamage - targetShields;
+	}
+	else // enough shields
+	{
+		targetShields -= totalDamage;
+		remainDamage = 0;
+	}
+	target->setShields(targetShields);
 
-		case Actions::Attack:
-			break;
+	// remaining damage to hitpoints
+	if(remainDamage > 0)
+	{
+		int calculatedDamage = calculateDamageTo(remainDamage, target);
+		int targetHP = target->getHitPoints();
+		targetHP -= calculatedDamage;
 
-		case Actions::North:
-			break;
-
-		case Actions::East:
-			break;
-
-		case Actions::West:
-			break;
-
-		case Actions::South:
-			break;
-
-		default:
-			// undefined action type
-			break;
+		target->setHitPoints(targetHP);
 	}
 }
 
@@ -85,7 +89,7 @@ int UnitInterface::getGroundWeaponDamage() const
 }
 
 // calculate damage depending on armor, damage type and unit size
-int UnitInterface::calculateDamageTo(const int damage, const Unit &defender) const
+int UnitInterface::calculateDamageTo(const int damage, const std::shared_ptr<UnitInterface> &defender) const
 {
 	int dmg = damage;
 
@@ -99,20 +103,20 @@ int UnitInterface::calculateDamageTo(const int damage, const Unit &defender) con
 	if(damageType == BWAPI::DamageTypes::Concussive)
 	{
 		if(sizeType == BWAPI::UnitSizeTypes::Large)
-			dmg = (int)dmg * 0.25;
+			dmg = (int)(dmg * 0.25);
 		else if(sizeType == BWAPI::UnitSizeTypes::Medium)
-			dmg = (int)dmg * 0.50;
+			dmg = (int)(dmg * 0.50);
 		else if(sizeType == BWAPI::UnitSizeTypes::Small)
-			dmg = (int)dmg * 1.00;
+			dmg = (int)(dmg * 1.00);
 	}
 	else if(damageType == BWAPI::DamageTypes::Explosive)
 	{
 		if(sizeType == BWAPI::UnitSizeTypes::Large)
-			dmg = (int)dmg * 1.00;
+			dmg = (int)(dmg * 1.00);
 		else if(sizeType == BWAPI::UnitSizeTypes::Medium)
-			dmg = (int)dmg * 0.75;
+			dmg = (int)(dmg * 0.75);
 		else if(sizeType == BWAPI::UnitSizeTypes::Small)
-			dmg = (int)dmg * 0.50;
+			dmg = (int)(dmg * 0.50);
 	}
 
 	// least damage check

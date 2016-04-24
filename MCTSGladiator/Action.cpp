@@ -5,12 +5,12 @@ using namespace MCTSG;
 Action::Action()
 {
 	unit = NULL;
-	actionType = Actions::Pass;
+	actionType = Actions::Stop;
 	target = NULL;
 	time = -1;
 }
 
-Action::Action(const Unit &u, const Actions &aType, const Unit &uTarget = NULL, const int t = -1)
+Action::Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t)
 {
 	unit = u;
 	actionType = aType;

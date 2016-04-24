@@ -12,6 +12,8 @@ namespace MCTSG
 		int time; // current frame count
 		Unitset allUnits;
 
+		static const int MOVE_DURATION = 8; // fixed duration for move (1/3 second)
+
 	public:
 
 		State();
@@ -22,6 +24,7 @@ namespace MCTSG
 		void set(const int t, const BWAPI::Unitset &units);
 		void update(const int t, const BWAPI::Unitset &units);
 		void makeMove(const Move move);
+		void doAction(const Action &action);
 
 		bool isEnd() const;
 

@@ -3,6 +3,7 @@
 #include <chrono>
 #include "UCTNode.h"
 #include "State.h"
+#include "Unit.h"
 #include "Action.h"
 #include "Logger.h"
 

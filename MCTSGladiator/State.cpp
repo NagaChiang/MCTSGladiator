@@ -73,11 +73,80 @@ void State::update(const int t, const BWAPI::Unitset &units)
 
 void State::makeMove(const Move move)
 {
+	// get next interesting time frame (find the min)
+	int minTimeFrame = 9999999;
+	for(auto &itr : allUnits)
+	{
+		Unit unit = itr.second;
+		int canAttackFrame = unit->getNextCanAttackFrame();
+		int canMoveFrame = unit->getNextCanMoveFrame();
+		if(canAttackFrame < minTimeFrame)
+			minTimeFrame = canAttackFrame;
+		if(canMoveFrame < minTimeFrame)
+			minTimeFrame = canMoveFrame;
+	}
+
 	// make actions in the move
 	for(const Action &action : move)
 	{
-		Unit unit = action.getUnit();
-		unit->doAction(action);
+		doAction(action);
+	}
+
+	// update frame time of this state
+	time = minTimeFrame;
+}
+
+void State::doAction(const Action &action)
+{
+	Unit unit = action.getUnit();
+	BWAPI::Position position = unit->getPosition();
+	int speed = unit->getSpeed();
+	switch(action.getType())
+	{
+		case Actions::Stop:
+			// stop/wait at the same position
+			break;
+
+		case Actions::Attack:
+			unit->attack(action.getTarget());
+			break;
+
+		case Actions::North:
+		{
+			BWAPI::Position dirNorth = BWAPI::Position(0, 1);
+			BWAPI::Position posNew = position + (dirNorth * speed * MOVE_DURATION);
+			unit->move(posNew);
+			break;
+		}
+
+		case Actions::East:
+		{
+			BWAPI::Position dirEast = BWAPI::Position(1, 0);
+			BWAPI::Position posNew = position + (dirEast * speed * MOVE_DURATION);
+			unit->move(posNew);
+			break;
+		}
+
+		case Actions::West:
+		{
+			BWAPI::Position dirWest = BWAPI::Position(-1, 0);
+			BWAPI::Position posNew = position + (dirWest * speed * MOVE_DURATION);
+			unit->move(posNew);
+			break;
+		}
+
+		case Actions::South:
+		{
+			BWAPI::Position dirSouth = BWAPI::Position(0, -1);
+			BWAPI::Position posNew = position + (dirSouth * speed * MOVE_DURATION);
+			unit->move(posNew);
+			break;
+		}
+
+		default:
+			// undefined action type
+			BWAPI::Broodwar << "ERROR: Undefined action type." << std::endl;
+			break;
 	}
 }
 

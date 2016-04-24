@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string>
 #include "State.h"
+#include "Unit.h"
 
 namespace MCTSG
 {

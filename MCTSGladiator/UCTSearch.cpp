@@ -58,7 +58,7 @@ Move UCTSearch::search(const State &state) const
 
 int UCTSearch::traverse(const UCTNode &node, const State &state) const
 {
-
+	return 0;
 }
 
 void UCTSearch::generateChildren(const UCTNode &node, const State &state) const
@@ -68,12 +68,13 @@ void UCTSearch::generateChildren(const UCTNode &node, const State &state) const
 
 UCTNode UCTSearch::selectNode(const UCTNode &node) const
 {
-
+	return UCTNode();
 }
 
 // only update when second/solo/leaf node appears
 void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) const
 {
+	// make moves
 	UCTNodeTypes nodeType = node.getNodeType();
 	if(nodeType != UCTNodeTypes::FIRST || isLeaf)
 	{
