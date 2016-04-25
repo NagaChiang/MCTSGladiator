@@ -100,6 +100,7 @@
     <ClCompile Include="UCTNode.cpp" />
     <ClCompile Include="UCTSearch.cpp" />
     <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="UnitData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Action.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="UCTNode.h" />
     <ClInclude Include="UCTSearch.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="UnitData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

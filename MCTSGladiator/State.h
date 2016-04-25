@@ -2,6 +2,7 @@
 #include <BWAPI.h>
 #include <stdexcept>
 #include "Unit.h"
+#include "UnitData.h"
 #include "Action.h"
 
 namespace MCTSG
@@ -11,8 +12,6 @@ namespace MCTSG
 
 		int time; // current frame count
 		Unitset allUnits;
-
-		static const int MOVE_DURATION = 8; // fixed duration for move (1/3 second)
 
 	public:
 

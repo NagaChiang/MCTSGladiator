@@ -37,7 +37,7 @@ void UnitInterface::update(const BWAPI::Unit &unit)
 	}
 }
 
-void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target)
+void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame)
 {
 	// TODO: can attack?
 
@@ -68,6 +68,19 @@ void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target)
 
 		target->setHitPoints(targetHP);
 	}
+
+	// update next available time frame
+	tMove = timeFrame + getAttackAnimFrameDuration();
+	tAttack = timeFrame + getGroundWeaponCooldown();
+}
+
+void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
+{
+	// move instantly
+	position = pos;
+
+	// update next available time frame
+	tMove = timeFrame + UnitData::MOVE_DURATION;
 }
 
 // armor including upgrades

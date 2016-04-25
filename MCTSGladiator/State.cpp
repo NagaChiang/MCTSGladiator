@@ -108,38 +108,38 @@ void State::doAction(const Action &action)
 			break;
 
 		case Actions::Attack:
-			unit->attack(action.getTarget());
+			unit->attack(action.getTarget(), time);
 			break;
 
 		case Actions::North:
 		{
 			BWAPI::Position dirNorth = BWAPI::Position(0, 1);
-			BWAPI::Position posNew = position + (dirNorth * speed * MOVE_DURATION);
-			unit->move(posNew);
+			BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
+			unit->move(posNew, time);
 			break;
 		}
 
 		case Actions::East:
 		{
 			BWAPI::Position dirEast = BWAPI::Position(1, 0);
-			BWAPI::Position posNew = position + (dirEast * speed * MOVE_DURATION);
-			unit->move(posNew);
+			BWAPI::Position posNew = position + (dirEast * speed * UnitData::MOVE_DURATION);
+			unit->move(posNew, time);
 			break;
 		}
 
 		case Actions::West:
 		{
 			BWAPI::Position dirWest = BWAPI::Position(-1, 0);
-			BWAPI::Position posNew = position + (dirWest * speed * MOVE_DURATION);
-			unit->move(posNew);
+			BWAPI::Position posNew = position + (dirWest * speed * UnitData::MOVE_DURATION);
+			unit->move(posNew, time);
 			break;
 		}
 
 		case Actions::South:
 		{
 			BWAPI::Position dirSouth = BWAPI::Position(0, -1);
-			BWAPI::Position posNew = position + (dirSouth * speed * MOVE_DURATION);
-			unit->move(posNew);
+			BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
+			unit->move(posNew, time);
 			break;
 		}
 

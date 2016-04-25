@@ -2,6 +2,7 @@
 #include <BWAPI.h>
 #include <map>
 #include <memory>
+#include "UnitData.h"
 
 namespace MCTSG
 {
@@ -24,8 +25,8 @@ namespace MCTSG
 
 		void update(const BWAPI::Unit &unit);
 
-		void attack(const std::shared_ptr<UnitInterface> &target);
-		void move(const BWAPI::Position pos) { position = pos; };
+		void attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame);
+		void move(const BWAPI::Position pos, const int timeFrame);
 
 		bool isAlive() const { return hitPoints > 0 ? true : false; };
 		bool isAlly() const { return ally; };
@@ -42,6 +43,7 @@ namespace MCTSG
 		int getGroundWeaponDamage() const;
 		BWAPI::DamageType getGroundWeaponDamageType() const { return unitType.groundWeapon().damageType(); };
 		int getGroundWeaponCooldown() const { return unitType.groundWeapon().damageCooldown(); };
+		const int getAttackAnimFrameDuration() const { return UnitData::getAttackAnimFrameDuration(unitType); };
 
 		int getID() const { return ID; };
 		BWAPI::UnitType getType() const { return unitType; };
