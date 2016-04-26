@@ -20,15 +20,14 @@ namespace MCTSG
 	{
 
 		// params
-		UCTSearchParams params;
+		UCTSearchParams _params;
 
 		// log
-		std::string logPath;
-		Logger logger;
+		std::string _logPath;
+		Logger _logger;
 
 	public:
 
-		UCTSearch();
 		UCTSearch(const UCTSearchParams &UCTparams);
 
 		Move search(const State &state) const; // return the UCT search result of the state

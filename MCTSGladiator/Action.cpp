@@ -4,16 +4,16 @@ using namespace MCTSG;
 
 Action::Action()
 {
-	unit = NULL;
-	actionType = Actions::Stop;
-	target = NULL;
-	time = -1;
+	_unit = NULL;
+	_actionType = Actions::Stop;
+	_target = NULL;
+	_time = -1;
 }
 
 Action::Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t)
 {
-	unit = u;
-	actionType = aType;
-	target = uTarget;
-	time = t;
+	_unit = u;
+	_actionType = aType;
+	_target = uTarget;
+	_time = t;
 }

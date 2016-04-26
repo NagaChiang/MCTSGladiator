@@ -16,23 +16,23 @@ namespace MCTSG
 	class UCTNode
 	{
 
-		Move move; // action vector; the move which generates this node from parent node
-		UCTNodeTypes type; // the type of the node in sequence
-		int visits, wins; // number of visits and wins
-		std::vector<UCTNode*> vecChildren; // children nodes
-		UCTNode *parent; // parent node
+		Move _move; // action vector; the move which generates this node from parent node
+		UCTNodeTypes _type; // the type of the node in sequence
+		int _visits, _wins; // number of visits and wins
+		std::vector<UCTNode*> _vecChildren; // children nodes
+		UCTNode *_parent; // parent node
 
 	public:
 
 		UCTNode();
 
 		// getters
-		Move getMove() const { return move; };
-		UCTNodeTypes getNodeType() const { return type; };
-		int getNumVisits() const { return visits; };
-		int getNumWins() const { return wins; };
-		bool hasChildren() const { return vecChildren.empty() ? false : true; };
-		std::vector<UCTNode*> getChildren() const { return vecChildren; };
-		UCTNode* getParent() const { return parent; };
+		Move getMove() const { return _move; };
+		UCTNodeTypes getNodeType() const { return _type; };
+		int getNumVisits() const { return _visits; };
+		int getNumWins() const { return _wins; };
+		bool hasChildren() const { return _vecChildren.empty() ? false : true; };
+		std::vector<UCTNode*> getChildren() const { return _vecChildren; };
+		UCTNode* getParent() const { return _parent; };
 	};
 }

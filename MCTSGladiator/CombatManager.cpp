@@ -5,28 +5,27 @@ using namespace MCTSG;
 const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/CombatManagerLog.txt";
 
 CombatManager::CombatManager()
-	:logPath(LOG_PATH)
+	:_logPath(LOG_PATH)
 {
-	currentState = State();
-	logger.init(logPath);
+	_logger.init(_logPath);
 }
 
 CombatManager::CombatManager(const int t, const BWAPI::Unitset &units)
-	:logPath(LOG_PATH)
+	:_logPath(LOG_PATH)
 {
 	set(t, units);
-	logger.init(logPath);
+	_logger.init(_logPath);
 }
 
 // assumption: no more units would appear later
 void CombatManager::set(const int t, const BWAPI::Unitset &units)
 {
 	// set new state
-	currentState.set(t, units);
+	_currentState.set(t, units);
 
 	// log init state
-	logger.log("CombatManager has been initiated!");
-	logger.log(currentState);
+	_logger.log("CombatManager has been initiated!");
+	_logger.log(_currentState);
 }
 
 // update the real state for manager; also track on status of units, such as attack CD
@@ -34,7 +33,7 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 void CombatManager::update(const int t, const BWAPI::Unitset &units)
 {
 	// update state
-	currentState.update(t, units);
+	_currentState.update(t, units);
 	//logger.log(currentState); // debug
 
 	// UCT Search
@@ -43,7 +42,7 @@ void CombatManager::update(const int t, const BWAPI::Unitset &units)
 	params.maxChildren = 20;
 	params.explorationConst = 1.6;
 	UCTSearch UCT = UCTSearch(params);
-	Move bestMove = UCT.search(currentState);
+	Move bestMove = UCT.search(_currentState);
 
 	// issue commands
 }

@@ -3,11 +3,11 @@
 using namespace MCTSG;
 
 UCTNode::UCTNode()
+	:_type(UCTNodeTypes::FIRST),
+	_visits(0),
+	_wins(0),
+	_parent(NULL)
 {
 	// to be the root
-	move.clear();
-	type = UCTNodeTypes::FIRST;
-	visits = 0;
-	wins = 0;
-	parent = NULL;
+	_move.clear();
 }

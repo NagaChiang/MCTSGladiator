@@ -10,10 +10,10 @@ namespace MCTSG
 	class CombatManager
 	{
 
-		State currentState;
-		const std::string logPath;
+		State _currentState;
+		const std::string _logPath;
 
-		Logger logger;
+		Logger _logger;
 
 	public:
 

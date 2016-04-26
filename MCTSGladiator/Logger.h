@@ -23,8 +23,8 @@ namespace MCTSG
 
 	private:
 
-		FILE *fptrLog;
-		std::string logPath;
+		FILE *_fptrLog;
+		std::string _logPath;
 
 		void timestamp() const;
 

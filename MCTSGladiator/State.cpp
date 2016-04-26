@@ -19,8 +19,8 @@ State::~State()
 
 void State::clear()
 {
-	time = 0;
-	allUnits.clear();
+	_time = 0;
+	_allUnits.clear();
 }
 
 void State::set(const int t, const BWAPI::Unitset &units)
@@ -29,7 +29,7 @@ void State::set(const int t, const BWAPI::Unitset &units)
 	clear();
 
 	// time frame
-	time = t;
+	_time = t;
 
 	// convert BWAPI units to MCTSG units
 	for(auto &u : units)
@@ -40,7 +40,7 @@ void State::set(const int t, const BWAPI::Unitset &units)
 		{
 			// convert and append
 			Unit unit = Unit(new UnitInterface(u));
-			allUnits.insert(Unitset::value_type(u->getID(), unit));
+			_allUnits.insert(Unitset::value_type(u->getID(), unit));
 		}
 	}
 }
@@ -48,10 +48,10 @@ void State::set(const int t, const BWAPI::Unitset &units)
 void State::update(const int t, const BWAPI::Unitset &units)
 {
 	// new time frame
-	time = t;
+	_time = t;
 
 	// update units
-	for(Unitset::iterator itr = allUnits.begin(); itr != allUnits.end(); itr++)
+	for(Unitset::iterator itr = _allUnits.begin(); itr != _allUnits.end(); itr++)
 	{
 		// search real units
 		bool isFound = false;
@@ -66,7 +66,7 @@ void State::update(const int t, const BWAPI::Unitset &units)
 
 		if(!isFound) // not found -> dead in real game
 		{
-			allUnits.erase(itr->second->getID()); // erase the unit
+			_allUnits.erase(itr->second->getID()); // erase the unit
 		}
 	}
 }
@@ -75,7 +75,7 @@ void State::makeMove(const Move move)
 {
 	// get next interesting time frame (find the min)
 	int minTimeFrame = 9999999;
-	for(auto &itr : allUnits)
+	for(auto &itr : _allUnits)
 	{
 		Unit unit = itr.second;
 		int canAttackFrame = unit->getNextCanAttackFrame();
@@ -93,7 +93,7 @@ void State::makeMove(const Move move)
 	}
 
 	// update frame time of this state
-	time = minTimeFrame;
+	_time = minTimeFrame;
 }
 
 void State::doAction(const Action &action)
@@ -108,14 +108,14 @@ void State::doAction(const Action &action)
 			break;
 
 		case Actions::Attack:
-			unit->attack(action.getTarget(), time);
+			unit->attack(action.getTarget(), _time);
 			break;
 
 		case Actions::North:
 		{
 			BWAPI::Position dirNorth = BWAPI::Position(0, 1);
 			BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, time);
+			unit->move(posNew, _time);
 			break;
 		}
 
@@ -123,7 +123,7 @@ void State::doAction(const Action &action)
 		{
 			BWAPI::Position dirEast = BWAPI::Position(1, 0);
 			BWAPI::Position posNew = position + (dirEast * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, time);
+			unit->move(posNew, _time);
 			break;
 		}
 
@@ -131,7 +131,7 @@ void State::doAction(const Action &action)
 		{
 			BWAPI::Position dirWest = BWAPI::Position(-1, 0);
 			BWAPI::Position posNew = position + (dirWest * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, time);
+			unit->move(posNew, _time);
 			break;
 		}
 
@@ -139,7 +139,7 @@ void State::doAction(const Action &action)
 		{
 			BWAPI::Position dirSouth = BWAPI::Position(0, -1);
 			BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, time);
+			unit->move(posNew, _time);
 			break;
 		}
 
@@ -166,7 +166,7 @@ Unit State::getUnit(const int ID) const
 
 	try
 	{
-		unit = allUnits.at(ID);
+		unit = _allUnits.at(ID);
 	}
 	catch(const std::out_of_range e)
 	{
@@ -180,7 +180,7 @@ Unit State::getUnit(const int ID) const
 int State::getAllyUnitsNum() const
 {
 	int num = 0;
-	for(const auto &itr : allUnits)
+	for(const auto &itr : _allUnits)
 	{
 		if(itr.second->isAlly())
 			num++;
@@ -192,7 +192,7 @@ int State::getAllyUnitsNum() const
 int State::getEnemyUnitsNum() const
 {
 	int num = 0;
-	for(const auto &itr : allUnits)
+	for(const auto &itr : _allUnits)
 	{
 		if(!itr.second->isAlly())
 			num++;
@@ -204,7 +204,7 @@ int State::getEnemyUnitsNum() const
 Unitset State::getAllyUnits() const
 {
 	Unitset unitset; // empty unitset
-	for(Unitset::const_iterator itr = allUnits.begin(); itr != allUnits.end(); itr++)
+	for(Unitset::const_iterator itr = _allUnits.begin(); itr != _allUnits.end(); itr++)
 	{
 		if(itr->second->isAlly())
 			unitset.insert(Unitset::value_type(itr->first, itr->second)); // add
@@ -216,7 +216,7 @@ Unitset State::getAllyUnits() const
 Unitset State::getEnemyUnits() const
 {
 	Unitset unitset; // empty unitset
-	for(Unitset::const_iterator itr = allUnits.begin(); itr != allUnits.end(); itr++)
+	for(Unitset::const_iterator itr = _allUnits.begin(); itr != _allUnits.end(); itr++)
 	{
 		if(!itr->second->isAlly())
 			unitset.insert(Unitset::value_type(itr->first, itr->second)); // add

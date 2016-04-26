@@ -9,14 +9,14 @@ namespace MCTSG
 	class UnitInterface
 	{
 
-		int ID;
-		bool ally; // is it ally?
-		BWAPI::UnitType unitType; // type of this unit
-		BWAPI::Position position; // current position
-		int hitPoints; // current HP
-		int shields; // current shield
-		int tAttack; // next time frame can attack
-		int tMove; // next time frame can move
+		int _ID;
+		bool _ally; // is it ally?
+		BWAPI::UnitType _unitType; // type of this unit
+		BWAPI::Position _position; // current position
+		int _hitPoints; // current HP
+		int _shields; // current shield
+		int _tAttack; // next time frame can attack
+		int _tMove; // next time frame can move
 
 	public:
 
@@ -28,30 +28,30 @@ namespace MCTSG
 		void attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame);
 		void move(const BWAPI::Position pos, const int timeFrame);
 
-		bool isAlive() const { return hitPoints > 0 ? true : false; };
-		bool isAlly() const { return ally; };
+		bool isAlive() const { return _hitPoints > 0 ? true : false; };
+		bool isAlly() const { return _ally; };
 
 		// setters
-		void setHitPoints(const int hp) { hitPoints = hp; };
-		void setShields(const int sh) { shields = sh; };
+		void setHitPoints(const int hp) { _hitPoints = hp; };
+		void setShields(const int sh) { _shields = sh; };
 
 		// getters
 		int getArmor() const;
-		int getSpeed() const { return (int)unitType.topSpeed(); };
+		int getSpeed() const { return (int)_unitType.topSpeed(); };
 
-		BWAPI::WeaponType getGroundWeapon() const { return unitType.groundWeapon(); };
+		BWAPI::WeaponType getGroundWeapon() const { return _unitType.groundWeapon(); };
 		int getGroundWeaponDamage() const;
-		BWAPI::DamageType getGroundWeaponDamageType() const { return unitType.groundWeapon().damageType(); };
-		int getGroundWeaponCooldown() const { return unitType.groundWeapon().damageCooldown(); };
-		const int getAttackAnimFrameDuration() const { return UnitData::getAttackAnimFrameDuration(unitType); };
+		BWAPI::DamageType getGroundWeaponDamageType() const { return _unitType.groundWeapon().damageType(); };
+		int getGroundWeaponCooldown() const { return _unitType.groundWeapon().damageCooldown(); };
+		const int getAttackAnimFrameDuration() const { return UnitData::getAttackAnimFrameDuration(_unitType); };
 
-		int getID() const { return ID; };
-		BWAPI::UnitType getType() const { return unitType; };
-		BWAPI::Position getPosition() const { return position; };
-		int getHitPoints() const { return hitPoints; };
-		int getShields() const { return shields; };
-		int getNextCanAttackFrame() const { return tAttack; };
-		int getNextCanMoveFrame() const { return tMove; };
+		int getID() const { return _ID; };
+		BWAPI::UnitType getType() const { return _unitType; };
+		BWAPI::Position getPosition() const { return _position; };
+		int getHitPoints() const { return _hitPoints; };
+		int getShields() const { return _shields; };
+		int getNextCanAttackFrame() const { return _tAttack; };
+		int getNextCanMoveFrame() const { return _tMove; };
 
 	private:
 

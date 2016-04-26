@@ -19,10 +19,10 @@ namespace MCTSG
 	class Action
 	{
 
-		Unit unit; // unit to perform the action
-		Actions actionType; // type of action
-		Unit target; // target unit
-		int time; // e.g. wait until time frame
+		Unit _unit; // unit to perform the action
+		Actions _actionType; // type of action
+		Unit _target; // target unit
+		int _time; // e.g. wait until time frame
 
 	public:
 
@@ -30,10 +30,10 @@ namespace MCTSG
 		Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t);
 
 		// getters
-		Unit getUnit() const { return unit; };
-		Actions getType() const { return actionType; };
-		Unit getTarget() const { return target; };
-		int getEndFrame() const { return time; };
+		Unit getUnit() const { return _unit; };
+		Actions getType() const { return _actionType; };
+		Unit getTarget() const { return _target; };
+		int getEndFrame() const { return _time; };
 	};
 
 	typedef std::vector<Action> Move;

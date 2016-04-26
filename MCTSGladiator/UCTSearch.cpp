@@ -5,28 +5,12 @@ using namespace std::chrono;
 
 const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/UCTSearchLog.txt";
 
-UCTSearch::UCTSearch()
-	:logPath(LOG_PATH)
-{
-	// params
-	params.timeLimit = milliseconds(0);
-	params.maxChildren = 0;
-	params.explorationConst = 0;
-
-	// log
-	logger.init(logPath);
-}
-
 UCTSearch::UCTSearch(const UCTSearchParams &UCTparams)
-	:logPath(LOG_PATH)
+	:_logPath(LOG_PATH),
+	_params(UCTparams)
 {
-	// params
-	params.timeLimit = milliseconds(UCTparams.timeLimit);
-	params.maxChildren = UCTparams.maxChildren;
-	params.explorationConst = UCTparams.explorationConst;
-
 	// log
-	logger.init(logPath);
+	_logger.init(_logPath);
 }
 
 Move UCTSearch::search(const State &state) const
@@ -46,7 +30,7 @@ Move UCTSearch::search(const State &state) const
 		// check time duration
 		steady_clock::time_point curTime = steady_clock::now();
 		milliseconds duration = duration_cast<milliseconds>(curTime - startTime);
-		if(duration.count() >= params.timeLimit.count())
+		if(duration.count() >= _params.timeLimit.count())
 		{
 			break; // time out!
 		}

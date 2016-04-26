@@ -4,9 +4,7 @@ using namespace MCTSG;
 
 Logger::Logger()
 {
-	// not initiated
-	fptrLog = NULL;
-	logPath = "";
+	_fptrLog = NULL;
 }
 
 Logger::Logger(const std::string &path)
@@ -18,21 +16,21 @@ Logger::Logger(const std::string &path)
 Logger::~Logger()
 {
 	// close the log
-	if(fptrLog)
-		fclose(fptrLog);
+	if(_fptrLog)
+		fclose(_fptrLog);
 }
 
 // initiate the log if hasn't been
 void Logger::init(const std::string &path)
 {
 	// if the log hasn't been initiated
-	if(!fptrLog)
+	if(!_fptrLog)
 	{
-		logPath = path;
-		fptrLog = fopen(path.c_str(), "a");
+		_logPath = path;
+		_fptrLog = fopen(path.c_str(), "a");
 
 		// failed to open
-		if(!fptrLog)
+		if(!_fptrLog)
 		{
 			BWAPI::Broodwar << "ERROR: Can't initiate the logger." << std::endl;
 		}
@@ -49,7 +47,7 @@ void Logger::init(const std::string &path)
 void Logger::log(const std::string &str) const
 {
 	// if not initiated
-	if(!fptrLog)
+	if(!_fptrLog)
 		return;
 
 	// timestamp
@@ -57,33 +55,33 @@ void Logger::log(const std::string &str) const
 
 	// log
 	std::string strOut = str + "\n";
-	fprintf(fptrLog, strOut.c_str());
+	fprintf(_fptrLog, strOut.c_str());
 }
 
 // log a state
 void Logger::log(const State &state) const
 {
 	// if not initiated
-	if(!fptrLog)
+	if(!_fptrLog)
 		return;
 
 	// timestamp
 	timestamp();
-	fprintf(fptrLog, "\n");
-	fprintf(fptrLog, "\t<State>\n");
-	fprintf(fptrLog, "\n");
+	fprintf(_fptrLog, "\n");
+	fprintf(_fptrLog, "\t<State>\n");
+	fprintf(_fptrLog, "\n");
 	
 	// time frame
-	fprintf(fptrLog, "\tTime Frame = %d\n", state.getTimeCount());
-	fprintf(fptrLog, "\n");
+	fprintf(_fptrLog, "\tTime Frame = %d\n", state.getTimeCount());
+	fprintf(_fptrLog, "\n");
 
 	// ally units
-	fprintf(fptrLog, "\tAlly Units (%d):\n", state.getAllyUnitsNum()); // title
+	fprintf(_fptrLog, "\tAlly Units (%d):\n", state.getAllyUnitsNum()); // title
 	Unitset allyUnits = state.getAllyUnits();
 	logUnits(allyUnits);
 
 	// enemy units
-	fprintf(fptrLog, "\tEnemy Units (%d):\n", state.getEnemyUnitsNum()); // title
+	fprintf(_fptrLog, "\tEnemy Units (%d):\n", state.getEnemyUnitsNum()); // title
 	Unitset enemyUnits = state.getEnemyUnits();
 	logUnits(enemyUnits);
 }
@@ -92,7 +90,7 @@ void Logger::log(const State &state) const
 void Logger::log(const long long num) const
 {
 	timestamp();
-	fprintf(fptrLog, "%lld\n", num);
+	fprintf(_fptrLog, "%lld\n", num);
 }
 
 // support function of log state
@@ -101,7 +99,7 @@ void Logger::logUnits(const Unitset &units) const
 	for(Unitset::const_iterator itr = units.begin(); itr != units.end(); itr++)
 	{
 		Unit unit = itr->second;
-		fprintf(fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %4d %5d %5d\n",
+		fprintf(_fptrLog, "\t\t%2d %-20s (%4d,%4d) %4d %4d %5d %5d\n",
 			unit->getID(),
 			unit->getType().toString().c_str(),
 			unit->getPosition().x, unit->getPosition().y,
@@ -110,7 +108,7 @@ void Logger::logUnits(const Unitset &units) const
 			unit->getNextCanAttackFrame(),
 			unit->getNextCanMoveFrame());
 	}
-	fprintf(fptrLog, "\n");
+	fprintf(_fptrLog, "\n");
 }
 
 // prefix for every log message
@@ -120,7 +118,7 @@ void Logger::timestamp() const
 	tm *timeStruct = localtime(&now); // convert to local time struct
 
 	// print out the timestamp prefix
-	fprintf(fptrLog, "[%04d/%02d/%02d %02d:%02d:%02d] ",
+	fprintf(_fptrLog, "[%04d/%02d/%02d %02d:%02d:%02d] ",
 			timeStruct->tm_year + 1900,
 			timeStruct->tm_mon + 1,
 			timeStruct->tm_mday,

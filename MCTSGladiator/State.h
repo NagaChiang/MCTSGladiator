@@ -10,8 +10,8 @@ namespace MCTSG
 	class State
 	{
 
-		int time; // current frame count
-		Unitset allUnits;
+		int _time; // current frame count
+		Unitset _allUnits;
 
 	public:
 
@@ -28,12 +28,12 @@ namespace MCTSG
 		bool isEnd() const;
 
 		// getters
-		int getTimeCount() const { return time; };
-		int getUnitsNum() const { return allUnits.size(); };
+		int getTimeCount() const { return _time; };
+		int getUnitsNum() const { return _allUnits.size(); };
 		int getAllyUnitsNum() const;
 		int getEnemyUnitsNum() const;
 		Unit getUnit(const int ID) const; // get unit (pointer) by ID
-		Unitset getUnits() const { return allUnits; };
+		Unitset getUnits() const { return _allUnits; };
 		Unitset getAllyUnits() const;
 		Unitset getEnemyUnits() const;
 	};

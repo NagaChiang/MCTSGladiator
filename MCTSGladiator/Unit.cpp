@@ -4,36 +4,36 @@ using namespace MCTSG;
 
 UnitInterface::UnitInterface()
 {
-	ID = -1;
-	ally = false;
-	unitType = BWAPI::UnitTypes::None;
-	position = BWAPI::Positions::None;
-	hitPoints = 0;
-	shields = 0;
-	tAttack = 0;
-	tMove = 0;
+	_ID = -1;
+	_ally = false;
+	_unitType = BWAPI::UnitTypes::None;
+	_position = BWAPI::Positions::None;
+	_hitPoints = 0;
+	_shields = 0;
+	_tAttack = 0;
+	_tMove = 0;
 }
 
 UnitInterface::UnitInterface(const BWAPI::Unit &unit)
 {
-	ID = unit->getID();
-	ally = unit->getPlayer() == BWAPI::Broodwar->self() ? true : false;
-	unitType = unit->getType();
-	position = unit->getPosition();
-	hitPoints = unit->getHitPoints();
-	shields = unit->getShields();
-	tAttack = 0; // with no prior information
-	tMove = 0; // with no prior information
+	_ID = unit->getID();
+	_ally = unit->getPlayer() == BWAPI::Broodwar->self() ? true : false;
+	_unitType = unit->getType();
+	_position = unit->getPosition();
+	_hitPoints = unit->getHitPoints();
+	_shields = unit->getShields();
+	_tAttack = 0; // with no prior information
+	_tMove = 0; // with no prior information
 }
 
 // update status from real unit (except for tAttack, tMove)
 void UnitInterface::update(const BWAPI::Unit &unit)
 {
-	if(ID == unit->getID()) // double check 
+	if(_ID == unit->getID()) // double check 
 	{
-		position = unit->getPosition();
-		hitPoints = unit->getHitPoints();
-		shields = unit->getShields();
+		_position = unit->getPosition();
+		_hitPoints = unit->getHitPoints();
+		_shields = unit->getShields();
 	}
 }
 
@@ -70,26 +70,26 @@ void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target, const i
 	}
 
 	// update next available time frame
-	tMove = timeFrame + getAttackAnimFrameDuration();
-	tAttack = timeFrame + getGroundWeaponCooldown();
+	_tMove = timeFrame + getAttackAnimFrameDuration();
+	_tAttack = timeFrame + getGroundWeaponCooldown();
 }
 
 void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
 {
 	// move instantly
-	position = pos;
+	_position = pos;
 
 	// update next available time frame
-	tMove = timeFrame + UnitData::MOVE_DURATION;
+	_tMove = timeFrame + UnitData::MOVE_DURATION;
 }
 
 // armor including upgrades
 int UnitInterface::getArmor() const
 {
 	if(isAlly())
-		return BWAPI::Broodwar->self()->armor(unitType);
+		return BWAPI::Broodwar->self()->armor(_unitType);
 	else // enemy
-		return BWAPI::Broodwar->enemy()->armor(unitType);
+		return BWAPI::Broodwar->enemy()->armor(_unitType);
 }
 
 // weapon damage including upgrades
