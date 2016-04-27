@@ -40,7 +40,7 @@ void State::set(const int t, const BWAPI::Unitset &units)
 		{
 			// convert and append
 			Unit unit = Unit(new UnitInterface(u));
-			_allUnits.insert(Unitset::value_type(u->getID(), unit));
+			_allUnits.addUnit(unit);
 		}
 	}
 }
@@ -74,17 +74,7 @@ void State::update(const int t, const BWAPI::Unitset &units)
 void State::makeMove(const Move move)
 {
 	// get next interesting time frame (find the min)
-	int minTimeFrame = 9999999;
-	for(auto &itr : _allUnits)
-	{
-		Unit unit = itr.second;
-		int canAttackFrame = unit->getNextCanAttackFrame();
-		int canMoveFrame = unit->getNextCanMoveFrame();
-		if(canAttackFrame < minTimeFrame)
-			minTimeFrame = canAttackFrame;
-		if(canMoveFrame < minTimeFrame)
-			minTimeFrame = canMoveFrame;
-	}
+	int minTimeFrame = getNextMinFrame();
 
 	// make actions in the move
 	for(const Action &action : move)
@@ -150,6 +140,177 @@ void State::doAction(const Action &action)
 	}
 }
 
+// erase dead units from the unitset
+void State::eraseDeadUnits()
+{
+	for(auto &itr : _allUnits)
+	{
+		Unit unit = itr.second;
+
+		if(!unit->isAlive())
+			_allUnits.erase(unit->getID());
+	}
+}
+
+std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly) const
+{
+	// get NOKAV first
+	std::vector<Move> moves;
+	Move moveNOKAV = generateNOKAVMove(forAlly);
+	moves.push_back(moveNOKAV);
+
+	// generate the rest of moves
+	bool hasAttack = true; // still has Move containing Actions::Attack
+	bool hasMove = true; // still has Move containing Actions::Move
+	Move lastMove = Move(moveNOKAV);
+	for(int i = 0; i < amount - 1; i++)
+	{
+		// clone Move from last one
+		Move move = Move(lastMove);
+
+		// generate new Move with replacing
+		if(hasAttack) // replace Attack with Move
+		{
+			// TODO
+		}
+		else if(hasMove) // replace Move with Stop
+		{
+
+		}
+		else // only Actions::Stop remains
+			break;
+
+		// keep this move for next
+		lastMove = Move(move);
+	}
+
+	return moves;
+}
+
+// generate Move with NOK-AV (No-OverKill-Attack-Value)
+Move State::generateNOKAVMove(const bool forAlly) const
+{
+	Move moveNOKAV;
+
+	// get units
+	Unitset units, targets;
+	if(forAlly) // control ally
+	{
+		units = getAllyUnits();
+		targets = getEnemyUnits();
+	}
+	else // control enemy
+	{
+		units = getEnemyUnits();
+		targets = getAllyUnits();
+	}
+
+	// construct Actions for every unit
+	Unitset unitsClone = units.deepCopy();
+	Unitset targetsClone = targets.deepCopy();
+	for(auto &itrUnits : unitsClone)
+	{
+		Unit unit = itrUnits.second;
+		Unit bestTarget = NULL; // target to attack
+		Actions actionType = Actions::None; // type of the action of this unit
+
+		// find targets in range
+		Unitset targetsInRange;
+		for(auto &itrTarget : targetsClone)
+		{
+			Unit target = itrTarget.second;
+
+			// any alive unit in range?
+			if(unit->isTargetInRange(target) && target->isAlive())
+				targetsInRange.addUnit(target);
+		}
+
+		// find the most valued target (alive; no-overkill)
+		float bestValue = 0;
+		for(auto &itrTarget : targetsInRange)
+		{
+			Unit target = itrTarget.second;
+			float value = target->getGroundWeaponDPF() * target->getHitPoints();
+			if(value > bestValue)
+			{
+				bestValue = value;
+				bestTarget = target;
+			}
+		}
+
+		// assign Action type
+		if(targetsInRange.size() > 0) // has targets in range
+		{
+			if(unit->canAttackAt(_time)) // can attack
+			{
+				// attack
+				actionType = Actions::Attack;
+				unit->attack(bestTarget, _time);
+			}
+			else // still cooldown
+			{
+				// stop
+				actionType = Actions::Stop;
+			}
+		}
+		else // no target in range
+		{
+			BWAPI::Position pos = unit->getPosition();
+
+			// find closest target
+			Unit unitClosest = NULL;
+			int distMin = 999999;
+			for(auto &itrTarget : targetsClone)
+			{
+				Unit target = itrTarget.second;
+				BWAPI::Position posTarget = target->getPosition();
+				int dist = pos.getApproxDistance(posTarget);
+				if(dist < distMin)
+				{
+					distMin = dist;
+					unitClosest = target;
+				}
+			}
+
+			// select a move toward the closest target
+			if(unitClosest)
+				actionType = getActionTypeFromTo(pos, unitClosest->getPosition());
+		}
+
+		// construct an Action for this Unit
+		Action action = Action(unit, actionType, bestTarget, 0);
+		moveNOKAV.push_back(action);
+	}
+
+	return moveNOKAV;
+}
+
+// get the actions type to that position (one of NEWS)
+Actions State::getActionTypeFromTo(const BWAPI::Position &from, const BWAPI::Position &to) const
+{
+	BWAPI::Position direction = to - from;
+	Actions actionType;
+
+	int x = direction.x;
+	int y = direction.y;
+	if(abs(x) >= abs(y)) // magnitude of x is bigger
+	{
+		if(x >= 0)
+			actionType = Actions::East;
+		else // x < 0
+			actionType = Actions::West;
+	}
+	else // magnitude of y is bigger
+	{
+		if(y >= 0)
+			actionType = Actions::North;
+		else // y < 0
+			actionType = Actions::South;
+	}
+
+	return actionType;
+}
+
 // is game over? (in combat scenario)
 bool State::isEnd() const
 {
@@ -157,6 +318,24 @@ bool State::isEnd() const
 		return true;
 	else
 		return false;
+}
+
+int State::getNextMinFrame() const
+{
+	// get next interesting time frame (find the min)
+	int minTimeFrame = 9999999;
+	for(auto &itr : _allUnits)
+	{
+		Unit unit = itr.second;
+		int canAttackFrame = unit->getNextCanAttackFrame();
+		int canMoveFrame = unit->getNextCanMoveFrame();
+		if(canAttackFrame < minTimeFrame)
+			minTimeFrame = canAttackFrame;
+		if(canMoveFrame < minTimeFrame)
+			minTimeFrame = canMoveFrame;
+	}
+
+	return minTimeFrame;
 }
 
 // get unit by ID; return null if not found

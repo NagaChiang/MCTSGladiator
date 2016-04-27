@@ -26,6 +26,19 @@ UnitInterface::UnitInterface(const BWAPI::Unit &unit)
 	_tMove = 0; // with no prior information
 }
 
+// copy from class Unit
+UnitInterface::UnitInterface(const std::shared_ptr<UnitInterface> &unit)
+{
+	_ID = unit->getID();
+	_ally = unit->isAlly();
+	_unitType = unit->getType();
+	_position = unit->getPosition();
+	_hitPoints = unit->getHitPoints();
+	_shields = unit->getShields();
+	_tAttack = unit->getNextCanAttackFrame();
+	_tMove = unit->getNextCanMoveFrame();
+}
+
 // update status from real unit (except for tAttack, tMove)
 void UnitInterface::update(const BWAPI::Unit &unit)
 {
@@ -39,7 +52,9 @@ void UnitInterface::update(const BWAPI::Unit &unit)
 
 void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame)
 {
-	// TODO: can attack?
+	// check can attack
+	if(!canAttackTargetAt(target, timeFrame))
+		return;
 
 	// total damage by this unit
 	int totalDamage = getGroundWeaponDamage();
@@ -81,6 +96,18 @@ void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
 
 	// update next available time frame
 	_tMove = timeFrame + UnitData::MOVE_DURATION;
+}
+
+bool UnitInterface::isTargetInRange(const std::shared_ptr<UnitInterface> &target) const
+{
+	// check attack range
+	BWAPI::Position posSelf = getPosition();
+	BWAPI::Position posTarget = target->getPosition();
+	int distance = posSelf.getApproxDistance(posTarget);
+	if(distance <= getGroundWeaponRange())
+		return true;
+	else // out of range
+		return false;
 }
 
 // armor including upgrades

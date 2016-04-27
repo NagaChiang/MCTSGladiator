@@ -1,6 +1,5 @@
 #pragma once
 #include <BWAPI.h>
-#include <map>
 #include <memory>
 #include "UnitData.h"
 
@@ -22,14 +21,20 @@ namespace MCTSG
 
 		UnitInterface();
 		UnitInterface(const BWAPI::Unit &unit);
+		UnitInterface(const std::shared_ptr<UnitInterface> &unit);
 
 		void update(const BWAPI::Unit &unit);
 
 		void attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame);
 		void move(const BWAPI::Position pos, const int timeFrame);
 
+		// conditions
 		bool isAlive() const { return _hitPoints > 0 ? true : false; };
 		bool isAlly() const { return _ally; };
+		bool isTargetInRange(const std::shared_ptr<UnitInterface> &target) const;
+		bool canAttackAt(const int timeFrame) const { return timeFrame >= _tAttack; };
+		bool canAttackTargetAt(const Unit &target, const int timeFrame) const { return canAttackAt(timeFrame) && isTargetInRange(target); };
+		bool canMoveAt(const int timeFrame) const { return timeFrame >= _tMove; };
 
 		// setters
 		void setHitPoints(const int hp) { _hitPoints = hp; };
@@ -43,7 +48,9 @@ namespace MCTSG
 		int getGroundWeaponDamage() const;
 		BWAPI::DamageType getGroundWeaponDamageType() const { return _unitType.groundWeapon().damageType(); };
 		int getGroundWeaponCooldown() const { return _unitType.groundWeapon().damageCooldown(); };
-		const int getAttackAnimFrameDuration() const { return UnitData::getAttackAnimFrameDuration(_unitType); };
+		int getGroundWeaponRange() const { return getGroundWeapon().maxRange(); };
+		float getGroundWeaponDPF() const { return (float)getGroundWeaponDamage() / getGroundWeaponCooldown(); }; // damage per frame
+		int getAttackAnimFrameDuration() const { return UnitData::getAttackAnimFrameDuration(_unitType); };
 
 		int getID() const { return _ID; };
 		BWAPI::UnitType getType() const { return _unitType; };
@@ -59,5 +66,4 @@ namespace MCTSG
 	};
 
 	typedef std::shared_ptr<UnitInterface> Unit;
-	typedef std::map<unsigned int, Unit> Unitset;
 }

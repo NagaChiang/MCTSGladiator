@@ -7,6 +7,7 @@ namespace MCTSG
 {
 	enum Actions
 	{
+		None,
 		Stop,
 		North,
 		East,

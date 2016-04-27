@@ -5,7 +5,7 @@ using namespace MCTSG;
 Action::Action()
 {
 	_unit = NULL;
-	_actionType = Actions::Stop;
+	_actionType = Actions::None;
 	_target = NULL;
 	_time = -1;
 }

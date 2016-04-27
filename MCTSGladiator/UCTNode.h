@@ -9,15 +9,16 @@ namespace MCTSG
 	// the type of the node in sequence
 	enum UCTNodeTypes
 	{
-		FIRST, // wait until second node update
-		SECOND // only update when second node appears; can also be a solo node
+		FIRST, // first node of simultaneous moves; wait for second node to update together (ally)
+		SECOND, // second node of sumultaneous moves (enemy)
+		SOLO // the only player can move at this time
 	};
 
 	class UCTNode
 	{
 
-		Move _move; // action vector; the move which generates this node from parent node
 		UCTNodeTypes _type; // the type of the node in sequence
+		Move _move; // action vector; the move which generates this node from parent node
 		int _visits, _wins; // number of visits and wins
 		std::vector<UCTNode*> _vecChildren; // children nodes
 		UCTNode *_parent; // parent node
@@ -25,6 +26,10 @@ namespace MCTSG
 	public:
 
 		UCTNode();
+		UCTNode(UCTNodeTypes type, Move move);
+
+		void visit() { _visits++; };
+		void addChild(UCTNode &child);
 
 		// getters
 		Move getMove() const { return _move; };

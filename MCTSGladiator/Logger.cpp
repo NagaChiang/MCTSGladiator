@@ -72,7 +72,7 @@ void Logger::log(const State &state) const
 	fprintf(_fptrLog, "\n");
 	
 	// time frame
-	fprintf(_fptrLog, "\tTime Frame = %d\n", state.getTimeCount());
+	fprintf(_fptrLog, "\tTime Frame = %d\n", state.getTimeFrame());
 	fprintf(_fptrLog, "\n");
 
 	// ally units
