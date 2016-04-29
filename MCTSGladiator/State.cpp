@@ -165,23 +165,72 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 	Move lastMove = Move(moveNOKAV);
 	for(int i = 0; i < amount - 1; i++)
 	{
-		// clone Move from last one
+		// get Move from last one
 		Move move = Move(lastMove);
+
+		// prepare random generator
+		std::default_random_engine generator;
+		std::uniform_int_distribution<int> distributionDir(1, 4); // for random direction
 
 		// generate new Move with replacing
 		if(hasAttack) // replace Attack with Move
 		{
-			// TODO
-		}
-		else if(hasMove) // replace Move with Stop
-		{
+			// get actions of Actions::Attack
+			Move moveAttack;
+			for(Action &action : move)
+			{
+				if(action.getType() == Actions::Attack)
+					moveAttack.push_back(action);
+			}
 
+			if(moveAttack.size() > 0)
+			{
+				// random select one
+				std::uniform_int_distribution<int> distributionAtk(0, moveAttack.size() - 1);
+				int index = distributionAtk(generator);
+
+				// replace
+				Action &action = moveAttack.at(index);
+				int randomDir = distributionDir(generator);
+				action.setType((Actions)randomDir);
+			}
+			else // no Attack anymore
+				hasAttack = false;
 		}
-		else // only Actions::Stop remains
+		
+		if(!hasAttack && hasMove) // replace Move with Stop
+		{
+			// get actions of Actions::Move
+			Move moveMove;
+			for(Action &action : move)
+			{
+				Actions type = action.getType();
+				if(type >= 1 && type <= 4)
+					moveMove.push_back(action);
+			}
+
+			if(moveMove.size() > 0)
+			{
+				// random select one
+				std::uniform_int_distribution<int> distributionMove(0, moveMove.size() - 1);
+				int index = distributionMove(generator);
+
+				// replace
+				Action &action = moveMove.at(index);
+				action.setType(Actions::Stop);
+			}
+			else // no Attack anymore
+				hasMove = false;
+		}
+
+		if(!hasAttack && !hasMove) // only Actions::Stop remains
 			break;
 
+		// ready to be passed back
+		moves.push_back(move);
+
 		// keep this move for next
-		lastMove = Move(move);
+		lastMove = move;
 	}
 
 	return moves;

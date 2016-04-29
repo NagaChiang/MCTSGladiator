@@ -35,6 +35,9 @@ namespace MCTSG
 		Actions getType() const { return _actionType; };
 		Unit getTarget() const { return _target; };
 		int getEndFrame() const { return _time; };
+
+		// setters
+		void setType(const Actions &type) { _actionType = type; };
 	};
 
 	typedef std::vector<Action> Move;

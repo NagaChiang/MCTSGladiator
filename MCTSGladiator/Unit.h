@@ -33,7 +33,7 @@ namespace MCTSG
 		bool isAlly() const { return _ally; };
 		bool isTargetInRange(const std::shared_ptr<UnitInterface> &target) const;
 		bool canAttackAt(const int timeFrame) const { return timeFrame >= _tAttack; };
-		bool canAttackTargetAt(const Unit &target, const int timeFrame) const { return canAttackAt(timeFrame) && isTargetInRange(target); };
+		bool canAttackTargetAt(const std::shared_ptr<UnitInterface> &target, const int timeFrame) const { return canAttackAt(timeFrame) && isTargetInRange(target); };
 		bool canMoveAt(const int timeFrame) const { return timeFrame >= _tMove; };
 
 		// setters

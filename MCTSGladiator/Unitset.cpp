@@ -16,6 +16,8 @@ Unitset Unitset::deepCopy() const
 		Unit clone = Unit(new UnitInterface(unit));
 		cloneSet.addUnit(clone);
 	}
+
+	return cloneSet;
 }
 
 BWAPI::Position Unitset::getCenter() const

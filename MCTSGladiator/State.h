@@ -1,6 +1,7 @@
 #pragma once
 #include <BWAPI.h>
 #include <stdexcept>
+#include <random>
 #include "Unit.h"
 #include "Unitset.h"
 #include "UnitData.h"
