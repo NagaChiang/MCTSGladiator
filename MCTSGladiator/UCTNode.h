@@ -29,13 +29,17 @@ namespace MCTSG
 		UCTNode(UCTNodeTypes type, Move move);
 
 		void visit() { _visits++; };
-		void addChild(UCTNode &child);
+		void updateWins(const int result) { _wins += result; };
+		void addChild(UCTNode *child);
 
 		// getters
 		Move getMove() const { return _move; };
 		UCTNodeTypes getNodeType() const { return _type; };
+
 		int getNumVisits() const { return _visits; };
 		int getNumWins() const { return _wins; };
+		double getWinRate() const { return (double)_wins / _visits; };
+
 		bool hasChildren() const { return _vecChildren.empty() ? false : true; };
 		std::vector<UCTNode*> getChildren() const { return _vecChildren; };
 		UCTNode* getParent() const { return _parent; };

@@ -12,6 +12,13 @@ State::State(const int t, const BWAPI::Unitset &units)
 	set(t, units);
 }
 
+// copy constructor
+State::State(const State &other)
+{
+	_time = other._time;
+	_allUnits = other._allUnits.deepCopy();
+}
+
 State::~State()
 {
 	clear();
@@ -159,78 +166,81 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 	Move moveNOKAV = generateNOKAVMove(forAlly);
 	moves.push_back(moveNOKAV);
 
-	// generate the rest of moves
-	bool hasAttack = true; // still has Move containing Actions::Attack
-	bool hasMove = true; // still has Move containing Actions::Move
-	Move lastMove = Move(moveNOKAV);
-	for(int i = 0; i < amount - 1; i++)
+	if(forAlly) // do not generate other moves for enemy
 	{
-		// get Move from last one
-		Move move = Move(lastMove);
-
-		// prepare random generator
-		std::default_random_engine generator;
-		std::uniform_int_distribution<int> distributionDir(1, 4); // for random direction
-
-		// generate new Move with replacing
-		if(hasAttack) // replace Attack with Move
+		// generate the rest of moves
+		bool hasAttack = true; // still has Move containing Actions::Attack
+		bool hasMove = true; // still has Move containing Actions::Move
+		Move lastMove = moveNOKAV; // keep its values
+		for(int i = 0; i < amount - 1; i++)
 		{
-			// get actions of Actions::Attack
-			Move moveAttack;
-			for(Action &action : move)
+			// copy Move from last one
+			Move move = Move(lastMove);
+
+			// prepare random generator
+			std::default_random_engine generator;
+			std::uniform_int_distribution<int> distributionDir(1, 4); // for random direction
+
+			// generate new Move with replacing
+			if(hasAttack) // replace Attack with Move
 			{
-				if(action.getType() == Actions::Attack)
-					moveAttack.push_back(action);
+				// get actions of Actions::Attack
+				Move moveAttack;
+				for(Action &action : move)
+				{
+					if(action.getType() == Actions::Attack)
+						moveAttack.push_back(action);
+				}
+
+				if(moveAttack.size() > 0)
+				{
+					// random select one
+					std::uniform_int_distribution<int> distributionAtk(0, moveAttack.size() - 1);
+					int index = distributionAtk(generator);
+
+					// replace
+					Action &action = moveAttack.at(index);
+					int randomDir = distributionDir(generator);
+					action.setType((Actions)randomDir);
+				}
+				else // no Attack anymore
+					hasAttack = false;
 			}
 
-			if(moveAttack.size() > 0)
+			if(!hasAttack && hasMove) // replace Move with Stop
 			{
-				// random select one
-				std::uniform_int_distribution<int> distributionAtk(0, moveAttack.size() - 1);
-				int index = distributionAtk(generator);
+				// get actions of Actions::Move
+				Move moveMove;
+				for(Action &action : move)
+				{
+					Actions type = action.getType();
+					if(type >= 1 && type <= 4)
+						moveMove.push_back(action);
+				}
 
-				// replace
-				Action &action = moveAttack.at(index);
-				int randomDir = distributionDir(generator);
-				action.setType((Actions)randomDir);
+				if(moveMove.size() > 0)
+				{
+					// random select one
+					std::uniform_int_distribution<int> distributionMove(0, moveMove.size() - 1);
+					int index = distributionMove(generator);
+
+					// replace
+					Action &action = moveMove.at(index);
+					action.setType(Actions::Stop);
+				}
+				else // no Attack anymore
+					hasMove = false;
 			}
-			else // no Attack anymore
-				hasAttack = false;
+
+			if(!hasAttack && !hasMove) // only Actions::Stop remains
+				break;
+
+			// ready to be passed back
+			moves.push_back(move);
+
+			// keep this move's values for next
+			lastMove = move;
 		}
-		
-		if(!hasAttack && hasMove) // replace Move with Stop
-		{
-			// get actions of Actions::Move
-			Move moveMove;
-			for(Action &action : move)
-			{
-				Actions type = action.getType();
-				if(type >= 1 && type <= 4)
-					moveMove.push_back(action);
-			}
-
-			if(moveMove.size() > 0)
-			{
-				// random select one
-				std::uniform_int_distribution<int> distributionMove(0, moveMove.size() - 1);
-				int index = distributionMove(generator);
-
-				// replace
-				Action &action = moveMove.at(index);
-				action.setType(Actions::Stop);
-			}
-			else // no Attack anymore
-				hasMove = false;
-		}
-
-		if(!hasAttack && !hasMove) // only Actions::Stop remains
-			break;
-
-		// ready to be passed back
-		moves.push_back(move);
-
-		// keep this move for next
-		lastMove = move;
 	}
 
 	return moves;
@@ -364,6 +374,15 @@ Actions State::getActionTypeFromTo(const BWAPI::Position &from, const BWAPI::Pos
 bool State::isEnd() const
 {
 	if(getAllyUnitsNum() == 0 || getEnemyUnitsNum() == 0)
+		return true;
+	else
+		return false;
+}
+
+// did ally win?
+bool State::isWin() const
+{
+	if(isEnd() && getAllyUnitsNum() > 0)
 		return true;
 	else
 		return false;

@@ -93,6 +93,12 @@ void Logger::log(const long long num) const
 	fprintf(_fptrLog, "%lld\n", num);
 }
 
+void Logger::log(const double num) const
+{
+	timestamp();
+	fprintf(_fptrLog, "%lf\n", num);
+}
+
 // support function of log state
 void Logger::logUnits(const Unitset &units) const
 {

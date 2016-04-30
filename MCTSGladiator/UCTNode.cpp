@@ -22,11 +22,11 @@ UCTNode::UCTNode(UCTNodeTypes type, Move move)
 	
 }
 
-void UCTNode::addChild(UCTNode &child)
+void UCTNode::addChild(UCTNode *child)
 {
 	// set this node as parent
-	child._parent = this;
+	child->_parent = this;
 
 	// add the child to this node
-	_vecChildren.push_back(&child);
+	_vecChildren.push_back(child);
 }

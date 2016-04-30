@@ -30,6 +30,8 @@ namespace MCTSG
 		Action();
 		Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t);
 
+		std::string toString() const;
+
 		// getters
 		Unit getUnit() const { return _unit; };
 		Actions getType() const { return _actionType; };

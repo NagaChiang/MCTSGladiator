@@ -22,5 +22,10 @@ namespace MCTSG
 
 		void set(const int t, const BWAPI::Unitset &units); // set at first
 		void update(const int t, const BWAPI::Unitset &units); // update every frame
+
+	private:
+
+		void issueCommands(const Move &move) const;
+
 	};
 }

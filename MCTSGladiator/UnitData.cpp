@@ -7,6 +7,10 @@ const int UnitData::getAttackAnimFrameDuration(const BWAPI::UnitType &unitType)
 {
 	if(unitType == BWAPI::UnitTypes::Terran_Marine)
 		return 8;
+	else if(unitType == BWAPI::UnitTypes::Protoss_Zealot)
+		return 7;
+	else if(unitType == BWAPI::UnitTypes::Protoss_Dragoon)
+		return 7;
 	else
 		return 0;
 }

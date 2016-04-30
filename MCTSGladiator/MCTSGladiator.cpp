@@ -79,7 +79,6 @@ void MCTSGladiator::onFrame()
 
 	// update new information for CombatManager
 	combatMgr.update(Broodwar->getFrameCount(), Broodwar->getAllUnits());
-
 }
 
 void MCTSGladiator::onSendText(std::string text)

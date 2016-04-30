@@ -19,6 +19,7 @@ namespace MCTSG
 
 		State();
 		State(const int t, const BWAPI::Unitset &units);
+		State(const State &other); // copy constructor
 		~State();
 
 		void clear();
@@ -33,6 +34,7 @@ namespace MCTSG
 
 		// conditions
 		bool isEnd() const;
+		bool isWin() const;
 
 		// getters
 		int getNextMinFrame() const;

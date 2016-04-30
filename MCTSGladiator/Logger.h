@@ -20,6 +20,7 @@ namespace MCTSG
 		void log(const std::string &str) const; // std::string
 		void log(const State &state) const; // state
 		void log(const long long num) const; // big integer
+		void log(const double num) const; // double
 
 	private:
 
