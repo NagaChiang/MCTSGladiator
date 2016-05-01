@@ -11,9 +11,6 @@ namespace MCTSG
 	{
 
 		State _currentState;
-		const std::string _logPath;
-
-		Logger _logger;
 
 	public:
 

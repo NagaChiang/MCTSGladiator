@@ -23,10 +23,6 @@ namespace MCTSG
 		// params
 		UCTSearchParams _params;
 
-		// log
-		std::string _logPath;
-		Logger _logger;
-
 		// statistics
 		int _traversals;
 		int _numNodeVisited;

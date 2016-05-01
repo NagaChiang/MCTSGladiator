@@ -2,19 +2,15 @@
 
 using namespace MCTSG;
 
-const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/CombatManagerLog.txt";
 
 CombatManager::CombatManager()
-	:_logPath(LOG_PATH)
 {
-	_logger.init(_logPath);
+	
 }
 
 CombatManager::CombatManager(const int t, const BWAPI::Unitset &units)
-	:_logPath(LOG_PATH)
 {
 	set(t, units);
-	_logger.init(_logPath);
 }
 
 // assumption: no more units would appear later
@@ -24,8 +20,8 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 	_currentState.set(t, units);
 
 	// log init state
-	_logger.log("CombatManager has been initiated!");
-	_logger.log(_currentState);
+	Logger::instance()->log("CombatManager has been initiated!");
+	Logger::instance()->log(_currentState);
 }
 
 // update the real state for manager; also track on status of units, such as attack CD

@@ -9,27 +9,31 @@ namespace MCTSG
 	class Logger
 	{
 
+		// singleton
+		static Logger* _ptrInstance;
+
+		FILE *_fptrLog;
+		std::string _logPath;
+
 	public:
 
 		Logger();
-		Logger(const std::string &path);
 		~Logger();
 
-		void init(const std::string &path);
+		static Logger* instance();
 
 		void log(const std::string &str) const; // std::string
 		void log(const State &state) const; // state
+		void log(const int num) const; // integer
 		void log(const long long num) const; // big integer
 		void log(const double num) const; // double
 
 	private:
 
-		FILE *_fptrLog;
-		std::string _logPath;
-
+		void init(const std::string &path);
 		void timestamp() const;
 
 		// support function
-		void Logger::logUnits(const Unitset &units) const;
+		void logUnits(const Unitset &units) const;
 	};
 }

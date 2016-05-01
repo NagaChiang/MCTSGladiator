@@ -3,14 +3,10 @@
 using namespace MCTSG;
 using namespace std::chrono;
 
-const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/UCTSearchLog.txt";
-
 UCTSearch::UCTSearch(const UCTSearchParams &UCTparams)
-	:_logPath(LOG_PATH),
-	_params(UCTparams)
+	:_params(UCTparams)
 {
-	// log
-	_logger.init(_logPath);
+
 }
 
 Move UCTSearch::search(const State &state)
@@ -54,8 +50,6 @@ Move UCTSearch::search(const State &state)
 			bestNode = node;
 		}
 	}
-
-	_logger.log(bestNode->getWinRate()); // TODO: all 0? fuck
 
 	if(bestNode)
 		return bestNode->getMove();

@@ -2,15 +2,13 @@
 
 using namespace MCTSG;
 
+Logger* Logger::_ptrInstance = NULL; // static
+
+const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/log.txt";
+
 Logger::Logger()
 {
 	_fptrLog = NULL;
-}
-
-Logger::Logger(const std::string &path)
-{
-	// initiate the logger
-	init(path);
 }
 
 Logger::~Logger()
@@ -18,6 +16,17 @@ Logger::~Logger()
 	// close the log
 	if(_fptrLog)
 		fclose(_fptrLog);
+}
+
+Logger* Logger::instance()
+{
+	if(!_ptrInstance)
+	{
+		_ptrInstance = new Logger();
+		_ptrInstance->init(LOG_PATH);
+	}
+
+	return _ptrInstance;
 }
 
 // initiate the log if hasn't been
@@ -86,15 +95,33 @@ void Logger::log(const State &state) const
 	logUnits(enemyUnits);
 }
 
-// log an integer
+void Logger::log(const int num) const
+{
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
+	timestamp();
+	fprintf(_fptrLog, "%d\n", num);
+}
+
+// log an big integer
 void Logger::log(const long long num) const
 {
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
 	timestamp();
 	fprintf(_fptrLog, "%lld\n", num);
 }
 
 void Logger::log(const double num) const
 {
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
 	timestamp();
 	fprintf(_fptrLog, "%lf\n", num);
 }
