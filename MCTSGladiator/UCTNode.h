@@ -38,7 +38,7 @@ namespace MCTSG
 
 		int getNumVisits() const { return _visits; };
 		int getNumWins() const { return _wins; };
-		double getWinRate() const { return (double)_wins / _visits; };
+		double getWinRate() const { return _visits > 0 ? (double)_wins / _visits : 0; };
 
 		bool hasChildren() const { return _vecChildren.empty() ? false : true; };
 		std::vector<UCTNode*> getChildren() const { return _vecChildren; };

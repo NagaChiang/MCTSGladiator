@@ -1,20 +1,41 @@
-#include "UCTSearch.h"
+	#include "UCTSearch.h"
 
 using namespace MCTSG;
 using namespace std::chrono;
 
+UCTSearch::UCTSearch()
+{
+	// default
+	_params.timeLimit = std::chrono::milliseconds(40);
+	_params.maxChildren = 20;
+	_params.explorationConst = 1.6;
+
+	// reset
+	reset();
+}
+
 UCTSearch::UCTSearch(const UCTSearchParams &UCTparams)
 	:_params(UCTparams)
 {
+	// reset
+	reset();
+}
 
+void UCTSearch::reset()
+{
+	// bestMove
+	_bestMove = Move();
+
+	// statistics
+	_traversals = 0;
+	_numNodeVisited = 0;
+	_numNodeCreated = 0;
 }
 
 Move UCTSearch::search(const State &state)
 {
 	// reset statistics
-	_traversals = 0;
-	_numNodeVisited = 0;
-	_numNodeCreated = 0;
+	reset();
 
 	// get start timestamp
 	steady_clock::time_point startTime = steady_clock::now();
@@ -51,8 +72,17 @@ Move UCTSearch::search(const State &state)
 		}
 	}
 
+	// debug
+	//if(bestNode)
+		//Logger::instance()->log(bestNode->getWinRate());
+
 	if(bestNode)
+	{
+		// keep the best Move
+		_bestMove = bestNode->getMove();
+
 		return bestNode->getMove();
+	}
 	else
 		return Move();
 }

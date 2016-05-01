@@ -23,6 +23,9 @@ namespace MCTSG
 		// params
 		UCTSearchParams _params;
 
+		// Move
+		Move _bestMove;
+
 		// statistics
 		int _traversals;
 		int _numNodeVisited;
@@ -30,16 +33,20 @@ namespace MCTSG
 
 	public:
 
+		UCTSearch();
 		UCTSearch(const UCTSearchParams &UCTparams);
 
 		Move search(const State &state); // return the UCT search result of the state
 
 		// getters
+		Move getBestMove() const { return _bestMove; };
 		int getTraversals() const { return _traversals; };
 		int getNumNodeVisited() const { return _numNodeVisited; };
 		int getNumNodeCreated() const { return _numNodeCreated; };
 
 	private:
+
+		void reset();
 
 		// UCT search
 		int traverse(UCTNode &node, State &state); // traverse from state with node (i.e. move, actions)

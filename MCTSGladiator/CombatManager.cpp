@@ -22,6 +22,13 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 	// log init state
 	Logger::instance()->log("CombatManager has been initiated!");
 	Logger::instance()->log(_currentState);
+
+	// UCT Search
+	UCTSearchParams params;
+	params.timeLimit = std::chrono::milliseconds(40);
+	params.maxChildren = 20;
+	params.explorationConst = 1.6;
+	_uctSearch = UCTSearch(params);
 }
 
 // update the real state for manager; also track on status of units, such as attack CD
@@ -32,30 +39,10 @@ void CombatManager::update(const int t, const BWAPI::Unitset &units)
 	_currentState.update(t, units);
 
 	// UCT Search
-	UCTSearchParams params;
-	params.timeLimit = std::chrono::milliseconds(40);
-	params.maxChildren = 20;
-	params.explorationConst = 1.6;
-
-	UCTSearch UCT = UCTSearch(params);
-	Move bestMove = UCT.search(_currentState);
+	Move bestMove = _uctSearch.search(_currentState);
 
 	// issue commands
 	issueCommands(bestMove);
-
-	// display statistics of UCTSearch
-	BWAPI::Broodwar->drawTextScreen(40, 0, "Traversals: %d", UCT.getTraversals());
-	BWAPI::Broodwar->drawTextScreen(40, 20, "Nodes Visited: %d", UCT.getNumNodeVisited());
-	BWAPI::Broodwar->drawTextScreen(40, 40, "Nodes Created: %d", UCT.getNumNodeCreated());
-
-	// display the Move
-	int x = 80, y = 60;
-	BWAPI::Broodwar->drawTextScreen(40, y, "Actions: ");
-	for(Action action : bestMove)
-	{
-		BWAPI::Broodwar->drawTextScreen(x, y, "%s", action.toString().c_str());
-		y += 10;
-	}
 }
 
 void CombatManager::issueCommands(const Move &move) const

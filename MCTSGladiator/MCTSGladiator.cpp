@@ -9,7 +9,7 @@ void MCTSGladiator::onStart()
 {
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
-	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
+	//Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
 
 	// Enable the UserInput flag, which allows us to control the bot and type messages.
 	Broodwar->enableFlag(Flag::UserInput);
@@ -42,8 +42,8 @@ void MCTSGladiator::onStart()
 	{
 		// Retrieve you and your enemy's races. enemy() will just return the first enemy.
 		// If you wish to deal with multiple enemies then you must use enemies().
-		if(Broodwar->enemy()) // First make sure there is an enemy
-			Broodwar << "The matchup is " << Broodwar->self()->getRace() << " vs " << Broodwar->enemy()->getRace() << std::endl;
+		//if(Broodwar->enemy()) // First make sure there is an enemy
+			//Broodwar << "The matchup is " << Broodwar->self()->getRace() << " vs " << Broodwar->enemy()->getRace() << std::endl;
 
 		// set units for combat manager
 		combatMgr.set(Broodwar->getFrameCount(), Broodwar->getAllUnits());
@@ -67,6 +67,22 @@ void MCTSGladiator::onFrame()
 	// Display the game frame rate as text in the upper left area of the screen
 	Broodwar->drawTextScreen(200, 0, "FPS: %d", Broodwar->getFPS());
 	Broodwar->drawTextScreen(200, 20, "Average FPS: %f", Broodwar->getAverageFPS());
+
+	// display statistics of UCTSearch
+	UCTSearch UCT = combatMgr.getUCTSearch();
+	BWAPI::Broodwar->drawTextScreen(40, 0, "Traversals: %d", UCT.getTraversals());
+	BWAPI::Broodwar->drawTextScreen(40, 20, "Nodes Visited: %d", UCT.getNumNodeVisited());
+	BWAPI::Broodwar->drawTextScreen(40, 40, "Nodes Created: %d", UCT.getNumNodeCreated());
+
+	// display the Move
+	Move bestMove = UCT.getBestMove();
+	int x = 80, y = 60;
+	BWAPI::Broodwar->drawTextScreen(40, y, "Actions: ");
+	for(Action action : bestMove)
+	{
+		BWAPI::Broodwar->drawTextScreen(x, y, "%s", action.toString().c_str());
+		y += 10;
+	}
 
 	// Return if the game is a replay or is paused
 	if(Broodwar->isReplay() || Broodwar->isPaused() || !Broodwar->self())
