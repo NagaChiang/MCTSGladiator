@@ -44,6 +44,9 @@ namespace MCTSG
 		int getArmor() const;
 		int getSpeed() const { return (int)_unitType.topSpeed(); };
 
+		int getRadius() const;
+		int getDistance(const std::shared_ptr<UnitInterface> &target) const;
+
 		BWAPI::WeaponType getGroundWeapon() const { return _unitType.groundWeapon(); };
 		int getGroundWeaponDamage() const;
 		BWAPI::DamageType getGroundWeaponDamageType() const { return _unitType.groundWeapon().damageType(); };

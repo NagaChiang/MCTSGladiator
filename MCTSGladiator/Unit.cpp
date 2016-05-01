@@ -101,9 +101,7 @@ void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
 bool UnitInterface::isTargetInRange(const std::shared_ptr<UnitInterface> &target) const
 {
 	// check attack range
-	BWAPI::Position posSelf = getPosition();
-	BWAPI::Position posTarget = target->getPosition();
-	int distance = posSelf.getApproxDistance(posTarget);
+	int distance = getDistance(target);
 	if(distance <= getGroundWeaponRange())
 		return true;
 	else // out of range
@@ -117,6 +115,38 @@ int UnitInterface::getArmor() const
 		return BWAPI::Broodwar->self()->armor(_unitType);
 	else // enemy
 		return BWAPI::Broodwar->enemy()->armor(_unitType);
+}
+
+// approximate distance from center to edge
+int UnitInterface::getRadius() const
+{
+	// get the width and height
+	int width = _unitType.width();
+	int height = _unitType.height();
+
+	// pick the larger one
+	int longer;
+	if(width >= height)
+		longer = width;
+	else
+		longer = height;
+
+	// half of it
+	return (int)longer / 2;
+}
+
+// aproximate distance from unit's edge to another one's
+int UnitInterface::getDistance(const std::shared_ptr<UnitInterface> &target) const
+{
+	BWAPI::Position posTarget = target->getPosition();
+	int distance = _position.getApproxDistance(posTarget);
+
+	// from edge to edge
+	int radiusUnit = getRadius();
+	int radiusTarget = target->getRadius();
+	distance -= radiusUnit + radiusTarget;
+
+	return distance;
 }
 
 // weapon damage including upgrades

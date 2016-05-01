@@ -30,7 +30,6 @@ void CombatManager::update(const int t, const BWAPI::Unitset &units)
 {
 	// update state
 	_currentState.update(t, units);
-	//logger.log(currentState); // debug
 
 	// UCT Search
 	UCTSearchParams params;
