@@ -285,11 +285,13 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		}
 
 		// find the most valued target (alive; no-overkill)
-		float bestValue = 0;
+		double bestValue = 0;
 		for(auto &itrTarget : targetsInRange)
 		{
 			Unit target = itrTarget.second;
-			float value = target->getGroundWeaponDPF() * target->getHitPoints();
+			int targetHP = target->getHitPoints();
+			int targetShield = target->getShields();
+			double value = (double)target->getGroundWeaponDPF() / (targetHP + targetShield);
 			if(value > bestValue)
 			{
 				bestValue = value;

@@ -73,8 +73,11 @@ Move UCTSearch::search(const State &state)
 	}
 
 	// debug
-	//if(bestNode)
-		//Logger::instance()->log(bestNode->getWinRate());
+	/*if(bestNode)
+	{
+		Logger::instance()->log(bestNode->getNumVisits());
+		Logger::instance()->log(bestNode->getNumWins());
+	}*/
 
 	if(bestNode)
 	{
