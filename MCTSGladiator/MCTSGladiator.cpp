@@ -5,8 +5,22 @@ using namespace BWAPI;
 using namespace Filter;
 using namespace MCTSG;
 
+MCTSGladiator::MCTSGladiator()
+	:_isNoGUIMode(FALSE),
+	_isLogWins(FALSE)
+{
+
+}
+
 void MCTSGladiator::onStart()
 {
+	// No GUI mode
+	if(_isNoGUIMode)
+	{
+		Broodwar->setGUI(false);
+		Broodwar->setLocalSpeed(0);
+	}
+
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	//Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
@@ -53,10 +67,16 @@ void MCTSGladiator::onStart()
 
 void MCTSGladiator::onEnd(bool isWinner)
 {
-	// Called when the game ends
-	if(isWinner)
+	if(_isLogWins)
 	{
-		// Log your win here!
+		if(isWinner) // win
+		{
+			Logger::instance()->log(1);
+		}
+		else // lose
+		{
+			Logger::instance()->log(0);
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <BWAPI.h>
 #include "CombatManager.h"
+#include "Logger.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -10,6 +11,8 @@ namespace MCTSG
 	{
 
 	public:
+
+		MCTSGladiator();
 
 		// Virtual functions for callbacks, leave these as they are.
 		virtual void onStart();
@@ -34,5 +37,7 @@ namespace MCTSG
 
 		CombatManager combatMgr;
 
+		bool _isNoGUIMode;
+		bool _isLogWins;
 	};
 }

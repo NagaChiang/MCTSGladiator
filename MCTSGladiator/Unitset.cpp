@@ -7,6 +7,23 @@ void Unitset::addUnit(const Unit &unit)
 	insert(Unitset::value_type(unit->getID(), unit));
 }
 
+Unit Unitset::getUnit(const int ID) const
+{
+	Unit unit = NULL;
+
+	try
+	{
+		unit = this->at(ID);
+	}
+	catch(const std::out_of_range e)
+	{
+		// maybe log?
+		//BWAPI::Broodwar << "ERROR: Unit ID not found!" << " (" << ID << ")" << std::endl;
+	}
+
+	return unit;
+}
+
 Unitset Unitset::deepCopy() const
 {
 	Unitset cloneSet;

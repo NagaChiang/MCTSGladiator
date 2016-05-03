@@ -20,8 +20,8 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 	_currentState.set(t, units);
 
 	// log init state
-	Logger::instance()->log("CombatManager has been initiated!");
-	Logger::instance()->log(_currentState);
+	/*Logger::instance()->log("CombatManager has been initiated!");
+	Logger::instance()->log(_currentState);*/
 
 	// UCT Search
 	UCTSearchParams params;
@@ -119,8 +119,11 @@ void CombatManager::issueCommands(const Move &move) const
 					continue;
 
 				// attack
-				unit->attack(target);
-				action.getUnit()->attack(action.getTarget(), _currentState.getTimeFrame()); // for cooldown
+				if(target)
+				{
+					unit->attack(target);
+					action.getUnit()->attack(action.getTarget(), _currentState.getTimeFrame()); // for cooldown
+				}
 
 				break;
 			}

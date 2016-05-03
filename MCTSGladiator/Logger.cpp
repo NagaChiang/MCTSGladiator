@@ -4,7 +4,8 @@ using namespace MCTSG;
 
 Logger* Logger::_ptrInstance = NULL; // static
 
-const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/log.txt";
+//const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/log.txt";
+const std::string LOG_PATH = "log.txt";
 
 Logger::Logger()
 {

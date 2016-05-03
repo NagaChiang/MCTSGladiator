@@ -65,6 +65,7 @@ Move UCTSearch::search(const State &state)
 	for(UCTNode *node : children)
 	{
 		double winRate = node->getWinRate();
+
 		if(winRate > bestWinRate)
 		{
 			bestWinRate = winRate;
@@ -73,11 +74,11 @@ Move UCTSearch::search(const State &state)
 	}
 
 	// debug
-	/*if(bestNode)
+	if(bestNode && FALSE)
 	{
 		Logger::instance()->log(bestNode->getNumVisits());
 		Logger::instance()->log(bestNode->getNumWins());
-	}*/
+	}
 
 	if(bestNode)
 	{
@@ -118,6 +119,13 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 
 			result = traverse(*selectNode(node), state);
 		}
+	}
+
+	if(result == 1 && FALSE)
+	{
+		Logger::instance()->log("------------");
+		Logger::instance()->log(node.getNumWins());
+		Logger::instance()->log(node.getNumVisits());
 	}
 
 	node.visit();
@@ -184,14 +192,14 @@ void UCTSearch::generateChildren(UCTNode &node, const State &state)
 	// generate moves
 	std::vector<Move> vecMoves = state.generateNextMoves(_params.maxChildren, isAllyMove);
 
-	// statistics
-	_numNodeCreated += isAllyMove ? _params.maxChildren : 1;
-
 	// add children to the node
 	for(Move move : vecMoves)
 	{
 		UCTNode *child = new UCTNode(nodeType, move);
 		node.addChild(child);
+
+		// statistics
+		_numNodeCreated++;
 	}
 }
 

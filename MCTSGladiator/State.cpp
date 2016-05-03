@@ -105,8 +105,13 @@ void State::doAction(const Action &action)
 			break;
 
 		case Actions::Attack:
-			unit->attack(action.getTarget(), _time);
+		{
+			Unit target = action.getTarget();
+			if(target)
+				unit->attack(action.getTarget(), _time);
+
 			break;
+		}
 
 		case Actions::North:
 		{
@@ -339,7 +344,19 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		}
 
 		// construct an Action for this Unit
-		Action action = Action(unit, actionType, bestTarget, 0);
+		Action action;
+		Unit realUnit = units.getUnit(unit->getID());
+
+		if(bestTarget)
+		{
+			Unit realTarget = targets.getUnit(bestTarget->getID());
+			action = Action(realUnit, actionType, realTarget, 0);
+		}
+		else
+		{
+			action = Action(realUnit, actionType, NULL, 0);
+		}
+
 		moveNOKAV.push_back(action);
 	}
 

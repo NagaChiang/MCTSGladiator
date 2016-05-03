@@ -11,6 +11,7 @@ namespace MCTSG
 	public:
 
 		void addUnit(const Unit &unit);
+		Unit getUnit(const int ID) const;
 
 		Unitset deepCopy() const;
 		BWAPI::Position getCenter() const;
