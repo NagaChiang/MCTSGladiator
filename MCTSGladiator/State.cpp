@@ -78,7 +78,7 @@ void State::update(const int t, const BWAPI::Unitset &units)
 	}
 }
 
-void State::makeMove(const Move move)
+void State::makeMove(const Move &move)
 {
 	// get next interesting time frame (find the min)
 	int minTimeFrame = getNextMinFrame();
@@ -421,6 +421,10 @@ int State::getNextMinFrame() const
 		if(canMoveFrame < minTimeFrame)
 			minTimeFrame = canMoveFrame;
 	}
+
+	// before current time frame
+	if(minTimeFrame < _time)
+		minTimeFrame = _time;
 
 	return minTimeFrame;
 }

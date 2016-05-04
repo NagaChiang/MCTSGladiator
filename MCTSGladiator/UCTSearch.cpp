@@ -43,11 +43,32 @@ Move UCTSearch::search(const State &state)
 	// create a new node to traverse
 	UCTNode root = UCTNode();
 
+	// debug
+	/*
+	State clone1 = State(state);
+	State clone2 = State(state);
+	Action action1 = Action(clone1.getUnit(0), Actions::West, NULL, 0);
+	Action action2 = Action(clone2.getUnit(0), Actions::West, NULL, 0);
+	Move move1, move2;
+	move1.push_back(action1);
+	move2.push_back(action2);
+	UCTNode node1 = UCTNode(UCTNodeTypes::SOLO, move1);
+	UCTNode node2 = UCTNode(UCTNodeTypes::SOLO, move2);
+	updateState(node1, clone1, false);
+	updateState(node2, clone2, false);
+
+	Logger::instance()->log(state);
+	Logger::instance()->log(clone1);
+	Logger::instance()->log(clone2);
+	Logger::instance()->log("------");
+	*/
+
 	// traverse until time out
 	while(true)
 	{
 		// traverse
-		traverse(root, State(state));
+		State clone = State(state);
+		traverse(root, clone);
 
 		// check time duration
 		steady_clock::time_point curTime = steady_clock::now();
@@ -74,7 +95,7 @@ Move UCTSearch::search(const State &state)
 	}
 
 	// debug
-	if(bestNode && FALSE)
+	if(bestNode && false)
 	{
 		Logger::instance()->log(bestNode->getNumVisits());
 		Logger::instance()->log(bestNode->getNumWins());
@@ -111,6 +132,13 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 		if(state.isEnd())
 		{
 			result = state.isWin() ? 1 : 0;
+
+			// debug
+			if(false)
+			{
+				Logger::instance()->log("------------");
+				Logger::instance()->log(state);
+			}
 		}
 		else
 		{
@@ -121,11 +149,14 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 		}
 	}
 
+	// debug
 	if(result == 1 && FALSE)
 	{
 		Logger::instance()->log("------------");
-		Logger::instance()->log(node.getNumWins());
-		Logger::instance()->log(node.getNumVisits());
+		Logger::instance()->log(state);
+
+		/*Logger::instance()->log(node.getNumWins());
+		Logger::instance()->log(node.getNumVisits());*/
 	}
 
 	node.visit();

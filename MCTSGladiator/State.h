@@ -26,7 +26,7 @@ namespace MCTSG
 		void set(const int t, const BWAPI::Unitset &units);
 		void update(const int t, const BWAPI::Unitset &units);
 
-		void makeMove(const Move move);
+		void makeMove(const Move &move);
 		void doAction(const Action &action);
 		void eraseDeadUnits();
 
