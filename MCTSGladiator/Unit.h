@@ -63,6 +63,9 @@ namespace MCTSG
 		int getNextCanAttackFrame() const { return _tAttack; };
 		int getNextCanMoveFrame() const { return _tMove; };
 
+		// debug
+		void killSelf();
+
 	private:
 
 		int calculateDamageTo(const int damage, const std::shared_ptr<UnitInterface> &defender) const;

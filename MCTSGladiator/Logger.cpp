@@ -96,6 +96,69 @@ void Logger::log(const State &state) const
 	logUnits(enemyUnits);
 }
 
+// unit
+void Logger::log(const Unit &unit) const
+{
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
+	// timestamp
+	timestamp();
+	
+	// unit
+	fprintf(_fptrLog, "%2d %-20s (%4d,%4d) %4d %4d %5d %5d\n",
+		unit->getID(),
+		unit->getType().toString().c_str(),
+		unit->getPosition().x, unit->getPosition().y,
+		unit->getHitPoints(),
+		unit->getShields(),
+		unit->getNextCanAttackFrame(),
+		unit->getNextCanMoveFrame());
+}
+
+// Move
+void Logger::log(const Move &Move) const
+{
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
+	// timestamp
+	timestamp();
+	fprintf(_fptrLog, "\n");
+	fprintf(_fptrLog, "\t<Move>\n");
+	fprintf(_fptrLog, "\n");
+
+	// actions in this Move
+	for(Action action : Move)
+	{
+		Unit unit = action.getUnit();
+		Unit target = action.getTarget();
+		int t = action.getEndFrame();
+
+		fprintf(_fptrLog, "\t");
+
+		// unit
+		if(unit)
+			fprintf(_fptrLog, "%2d ", unit->getID());
+		else
+			fprintf(_fptrLog, "Nu ", unit->getID());
+
+		// type
+		fprintf(_fptrLog, "%-7s", action.toString().c_str());
+
+		// target
+		if(target)
+			fprintf(_fptrLog, "%2d ", target->getID());
+		else
+			fprintf(_fptrLog, "Nu ", target->getID());
+
+		// time
+		fprintf(_fptrLog, "%5d\n\n", t);
+	}
+}
+
 void Logger::log(const int num) const
 {
 	// if not initiated

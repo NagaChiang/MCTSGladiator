@@ -32,6 +32,8 @@ namespace MCTSG
 		void updateWins(const int result) { _wins += result; };
 		void addChild(UCTNode *child);
 
+		std::string toString() const; // convert node type to string
+
 		// getters
 		Move getMove() const { return _move; };
 		UCTNodeTypes getNodeType() const { return _type; };

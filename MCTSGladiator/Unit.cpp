@@ -194,3 +194,9 @@ int UnitInterface::calculateDamageTo(const int damage, const std::shared_ptr<Uni
 
 	return dmg;
 }
+
+// debug
+void UnitInterface::killSelf()
+{
+	_hitPoints = 0;
+}

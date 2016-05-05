@@ -26,7 +26,7 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 	// UCT Search
 	UCTSearchParams params;
 	params.timeLimit = std::chrono::milliseconds(40);
-	params.maxChildren = 20;
+	params.maxChildren = 1; // debug
 	params.explorationConst = 1.6;
 	_uctSearch = UCTSearch(params);
 }

@@ -494,3 +494,9 @@ Unitset State::getEnemyUnits() const
 
 	return unitset;
 }
+
+// debug
+void State::kill()
+{
+	_allUnits[18]->killSelf();
+}

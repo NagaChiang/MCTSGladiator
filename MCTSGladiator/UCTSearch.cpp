@@ -47,21 +47,22 @@ Move UCTSearch::search(const State &state)
 	/*
 	State clone1 = State(state);
 	State clone2 = State(state);
-	Action action1 = Action(clone1.getUnit(0), Actions::West, NULL, 0);
-	Action action2 = Action(clone2.getUnit(0), Actions::West, NULL, 0);
+	Action action1 = Action(clone1.getUnit(1), Actions::Attack, clone1.getUnit(3), 0);
+	//Action action2 = Action(clone2.getUnit(0), Actions::West, NULL, 0);
 	Move move1, move2;
 	move1.push_back(action1);
-	move2.push_back(action2);
+	//move2.push_back(action2);
 	UCTNode node1 = UCTNode(UCTNodeTypes::SOLO, move1);
-	UCTNode node2 = UCTNode(UCTNodeTypes::SOLO, move2);
+	//UCTNode node2 = UCTNode(UCTNodeTypes::SOLO, move2);
 	updateState(node1, clone1, false);
-	updateState(node2, clone2, false);
-
+	//updateState(node2, clone2, false);
+	
 	Logger::instance()->log(state);
 	Logger::instance()->log(clone1);
-	Logger::instance()->log(clone2);
+	//Logger::instance()->log(clone1);
 	Logger::instance()->log("------");
 	*/
+	
 
 	// traverse until time out
 	while(true)
@@ -118,7 +119,7 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 
 	int result = 0; // win = 1, lose = 0
 
-	if(node.getNumVisits() == 0)
+	if(node.getNumVisits() == -1)
 	{
 		updateState(node, state, true); // leaf
 		// score <- s.eval()
@@ -134,10 +135,10 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 			result = state.isWin() ? 1 : 0;
 
 			// debug
-			if(false)
+			if(result == 1 && false)
 			{
-				Logger::instance()->log("------------");
 				Logger::instance()->log(state);
+				Logger::instance()->log("------------");
 			}
 		}
 		else
@@ -150,10 +151,10 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 	}
 
 	// debug
-	if(result == 1 && FALSE)
+	if(result == 1 && false)
 	{
-		Logger::instance()->log("------------");
 		Logger::instance()->log(state);
+		Logger::instance()->log("------------");
 
 		/*Logger::instance()->log(node.getNumWins());
 		Logger::instance()->log(node.getNumVisits());*/
@@ -226,7 +227,7 @@ void UCTSearch::generateChildren(UCTNode &node, const State &state)
 	// add children to the node
 	for(Move move : vecMoves)
 	{
-		UCTNode *child = new UCTNode(nodeType, move);
+		UCTNode *child = new UCTNode(nodeTypeChild, move);
 		node.addChild(child);
 
 		// statistics
@@ -264,6 +265,9 @@ UCTNode* UCTSearch::selectNode(const UCTNode &node) const
 // only update when second/solo/leaf node appears
 void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) const
 {
+	// debug
+	State origin = State(state);
+
 	// make moves
 	UCTNodeTypes nodeType = node.getNodeType();
 	if(nodeType != UCTNodeTypes::FIRST || isLeaf)
@@ -277,4 +281,15 @@ void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) cons
 
 	// erase dead units from the unitset
 	state.eraseDeadUnits();
+
+	// debug
+	if(false)
+	{
+		//Logger::instance()->log(node.getParent()->getMove());
+		Logger::instance()->log(node.toString());
+		Logger::instance()->log(node.getMove());
+		Logger::instance()->log(origin);
+		Logger::instance()->log(state);
+		Logger::instance()->log("---------");
+	}
 }

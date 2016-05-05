@@ -48,6 +48,9 @@ namespace MCTSG
 		Unitset getAllyUnits() const;
 		Unitset getEnemyUnits() const;
 
+		// debug
+		void kill();
+
 	private:
 
 		// support functions of generateNextMoves()

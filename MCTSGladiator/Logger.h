@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string>
 #include "State.h"
+#include "Action.h"
 #include "Unit.h"
 
 namespace MCTSG
@@ -24,6 +25,8 @@ namespace MCTSG
 
 		void log(const std::string &str) const; // std::string
 		void log(const State &state) const; // state
+		void log(const Unit &unit) const; // Unit
+		void log(const Move &Move) const; // Move
 		void log(const int num) const; // integer
 		void log(const long long num) const; // big integer
 		void log(const double num) const; // double
