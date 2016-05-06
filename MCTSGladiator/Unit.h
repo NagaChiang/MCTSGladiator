@@ -27,6 +27,7 @@ namespace MCTSG
 
 		void attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame);
 		void move(const BWAPI::Position pos, const int timeFrame);
+		void stop(const int endFrame);
 
 		// conditions
 		bool isAlive() const { return _hitPoints > 0 ? true : false; };
@@ -62,9 +63,6 @@ namespace MCTSG
 		int getShields() const { return _shields; };
 		int getNextCanAttackFrame() const { return _tAttack; };
 		int getNextCanMoveFrame() const { return _tMove; };
-
-		// debug
-		void killSelf();
 
 	private:
 

@@ -80,75 +80,75 @@ void State::update(const int t, const BWAPI::Unitset &units)
 
 void State::makeMove(const Move &move)
 {
-	// get next interesting time frame (find the min)
-	int minTimeFrame = getNextMinFrame();
-
 	// make actions in the move
 	for(const Action &action : move)
 	{
 		doAction(action);
 	}
-
-	// update frame time of this state
-	_time = minTimeFrame;
 }
 
 void State::doAction(const Action &action)
 {
-	Unit unit = action.getUnit();
-	BWAPI::Position position = unit->getPosition();
-	int speed = unit->getSpeed();
-	switch(action.getType())
+	Unit unit = getUnit(action.getUnitID());
+	if(unit)
 	{
-		case Actions::Stop:
-			// stop/wait at the same position
-			break;
-
-		case Actions::Attack:
+		BWAPI::Position position = unit->getPosition();
+		int speed = unit->getSpeed();
+		switch(action.getType())
 		{
-			Unit target = action.getTarget();
-			if(target)
-				unit->attack(action.getTarget(), _time);
+			case Actions::Stop:
+			{
+				int endFrame = action.getEndFrame();
+				unit->stop(endFrame);
 
-			break;
+				break;
+			}
+
+			case Actions::Attack:
+			{
+				Unit target = getUnit(action.getTargetID());
+				unit->attack(target, _time);
+
+				break;
+			}
+
+			case Actions::North:
+			{
+				BWAPI::Position dirNorth = BWAPI::Position(0, 1);
+				BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
+				unit->move(posNew, _time);
+				break;
+			}
+
+			case Actions::East:
+			{
+				BWAPI::Position dirEast = BWAPI::Position(1, 0);
+				BWAPI::Position posNew = position + (dirEast * speed * UnitData::MOVE_DURATION);
+				unit->move(posNew, _time);
+				break;
+			}
+
+			case Actions::West:
+			{
+				BWAPI::Position dirWest = BWAPI::Position(-1, 0);
+				BWAPI::Position posNew = position + (dirWest * speed * UnitData::MOVE_DURATION);
+				unit->move(posNew, _time);
+				break;
+			}
+
+			case Actions::South:
+			{
+				BWAPI::Position dirSouth = BWAPI::Position(0, -1);
+				BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
+				unit->move(posNew, _time);
+				break;
+			}
+
+			default:
+				// undefined action type
+				BWAPI::Broodwar << "ERROR: Undefined action type." << std::endl;
+				break;
 		}
-
-		case Actions::North:
-		{
-			BWAPI::Position dirNorth = BWAPI::Position(0, 1);
-			BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, _time);
-			break;
-		}
-
-		case Actions::East:
-		{
-			BWAPI::Position dirEast = BWAPI::Position(1, 0);
-			BWAPI::Position posNew = position + (dirEast * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, _time);
-			break;
-		}
-
-		case Actions::West:
-		{
-			BWAPI::Position dirWest = BWAPI::Position(-1, 0);
-			BWAPI::Position posNew = position + (dirWest * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, _time);
-			break;
-		}
-
-		case Actions::South:
-		{
-			BWAPI::Position dirSouth = BWAPI::Position(0, -1);
-			BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
-			unit->move(posNew, _time);
-			break;
-		}
-
-		default:
-			// undefined action type
-			BWAPI::Broodwar << "ERROR: Undefined action type." << std::endl;
-			break;
 	}
 }
 
@@ -212,7 +212,7 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 					hasAttack = false;
 			}
 
-			if(!hasAttack && hasMove) // replace Move with Stop
+			if(!hasAttack && hasMove) // replace Move with Stop // TODO: stop until?
 			{
 				// get actions of Actions::Move
 				Move moveMove;
@@ -277,6 +277,7 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		Unit unit = itrUnits.second;
 		Unit bestTarget = NULL; // target to attack
 		Actions actionType = Actions::None; // type of the action of this unit
+		int endFrame = 0; // for stop
 
 		// find targets in range
 		Unitset targetsInRange;
@@ -289,7 +290,7 @@ Move State::generateNOKAVMove(const bool forAlly) const
 				targetsInRange.addUnit(target);
 		}
 
-		// find the most valued target (alive; no-overkill)
+		// find the most valued target in range (alive; no-overkill)
 		double bestValue = 0;
 		for(auto &itrTarget : targetsInRange)
 		{
@@ -297,6 +298,7 @@ Move State::generateNOKAVMove(const bool forAlly) const
 			int targetHP = target->getHitPoints();
 			int targetShield = target->getShields();
 			double value = (double)target->getGroundWeaponDPF() / (targetHP + targetShield);
+
 			if(value > bestValue)
 			{
 				bestValue = value;
@@ -315,8 +317,9 @@ Move State::generateNOKAVMove(const bool forAlly) const
 			}
 			else // still cooldown
 			{
-				// stop
+				// stop until cooldown finished
 				actionType = Actions::Stop;
+				endFrame = unit->getNextCanAttackFrame();
 			}
 		}
 		else // no target in range
@@ -345,16 +348,13 @@ Move State::generateNOKAVMove(const bool forAlly) const
 
 		// construct an Action for this Unit
 		Action action;
-		Unit realUnit = units.getUnit(unit->getID());
-
 		if(bestTarget)
 		{
-			Unit realTarget = targets.getUnit(bestTarget->getID());
-			action = Action(realUnit, actionType, realTarget, 0);
+			action = Action(unit->getID(), actionType, bestTarget->getID(), endFrame);
 		}
 		else
 		{
-			action = Action(realUnit, actionType, NULL, 0);
+			action = Action(unit->getID(), actionType, -1, endFrame);
 		}
 
 		moveNOKAV.push_back(action);
@@ -416,15 +416,12 @@ int State::getNextMinFrame() const
 		Unit unit = itr.second;
 		int canAttackFrame = unit->getNextCanAttackFrame();
 		int canMoveFrame = unit->getNextCanMoveFrame();
+
 		if(canAttackFrame < minTimeFrame)
 			minTimeFrame = canAttackFrame;
 		if(canMoveFrame < minTimeFrame)
 			minTimeFrame = canMoveFrame;
 	}
-
-	// before current time frame
-	if(minTimeFrame < _time)
-		minTimeFrame = _time;
 
 	return minTimeFrame;
 }
@@ -493,10 +490,4 @@ Unitset State::getEnemyUnits() const
 	}
 
 	return unitset;
-}
-
-// debug
-void State::kill()
-{
-	_allUnits[18]->killSelf();
 }

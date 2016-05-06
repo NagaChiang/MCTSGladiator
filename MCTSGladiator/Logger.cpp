@@ -133,26 +133,20 @@ void Logger::log(const Move &Move) const
 	// actions in this Move
 	for(Action action : Move)
 	{
-		Unit unit = action.getUnit();
-		Unit target = action.getTarget();
+		int unitID = action.getUnitID();
+		int targetID = action.getTargetID();
 		int t = action.getEndFrame();
 
 		fprintf(_fptrLog, "\t");
 
 		// unit
-		if(unit)
-			fprintf(_fptrLog, "%2d ", unit->getID());
-		else
-			fprintf(_fptrLog, "Nu ", unit->getID());
+		fprintf(_fptrLog, "%2d ", unitID);
 
 		// type
 		fprintf(_fptrLog, "%-7s", action.toString().c_str());
 
 		// target
-		if(target)
-			fprintf(_fptrLog, "%2d ", target->getID());
-		else
-			fprintf(_fptrLog, "Nu ", target->getID());
+		fprintf(_fptrLog, "%2d ", targetID);
 
 		// time
 		fprintf(_fptrLog, "%5d\n\n", t);

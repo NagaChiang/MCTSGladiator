@@ -36,9 +36,11 @@ namespace MCTSG
 		bool isEnd() const;
 		bool isWin() const;
 
+		// setters
+		void setTimeFrame(const int time) { _time = time; };
+
 		// getters
 		int getNextMinFrame() const;
-
 		int getTimeFrame() const { return _time; };
 		int getUnitsNum() const { return _allUnits.size(); };
 		int getAllyUnitsNum() const;
@@ -47,9 +49,6 @@ namespace MCTSG
 		Unitset getUnits() const { return _allUnits; };
 		Unitset getAllyUnits() const;
 		Unitset getEnemyUnits() const;
-
-		// debug
-		void kill();
 
 	private:
 

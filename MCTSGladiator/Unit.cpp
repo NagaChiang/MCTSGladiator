@@ -44,49 +44,57 @@ void UnitInterface::update(const BWAPI::Unit &unit)
 {
 	if(_ID == unit->getID()) // double check 
 	{
+		// properties
 		_position = unit->getPosition();
 		_hitPoints = unit->getHitPoints();
 		_shields = unit->getShields();
+
+		// weapon cooldown
+		if(unit->canAttack())
+			_tAttack = BWAPI::Broodwar->getFrameCount(); // refresh
 	}
 }
 
 void UnitInterface::attack(const std::shared_ptr<UnitInterface> &target, const int timeFrame)
 {
-	// check can attack
-	if(!canAttackTargetAt(target, timeFrame))
-		return;
-
-	// total damage by this unit
-	int totalDamage = getGroundWeaponDamage();
-	int remainDamage = totalDamage;
-
-	// shields take full damage
-	int targetShields = target->getShields();
-	if(targetShields < totalDamage) // not enough shields
+	if(target)
 	{
-		targetShields = 0;
-		remainDamage = totalDamage - targetShields;
-	}
-	else // enough shields
-	{
-		targetShields -= totalDamage;
-		remainDamage = 0;
-	}
-	target->setShields(targetShields);
+		// check can attack
+		//if(!canAttackTargetAt(target, timeFrame))
+		//return;
 
-	// remaining damage to hitpoints
-	if(remainDamage > 0)
-	{
-		int calculatedDamage = calculateDamageTo(remainDamage, target);
-		int targetHP = target->getHitPoints();
-		targetHP -= calculatedDamage;
+		// total damage by this unit
+		int totalDamage = getGroundWeaponDamage();
+		int remainDamage = totalDamage;
 
-		target->setHitPoints(targetHP);
+		// shields take full damage
+		int targetShields = target->getShields();
+		if(targetShields < totalDamage) // not enough shields
+		{
+			targetShields = 0;
+			remainDamage = totalDamage - targetShields;
+		}
+		else // enough shields
+		{
+			targetShields -= totalDamage;
+			remainDamage = 0;
+		}
+		target->setShields(targetShields);
+
+		// remaining damage to hitpoints
+		if(remainDamage > 0)
+		{
+			int calculatedDamage = calculateDamageTo(remainDamage, target);
+			int targetHP = target->getHitPoints();
+			targetHP -= calculatedDamage;
+
+			target->setHitPoints(targetHP);
+		}
+
+		// update next available time frame
+		_tMove = timeFrame + getAttackAnimFrameDuration();
+		_tAttack = timeFrame + getGroundWeaponCooldown();
 	}
-
-	// update next available time frame
-	_tMove = timeFrame + getAttackAnimFrameDuration();
-	_tAttack = timeFrame + getGroundWeaponCooldown();
 }
 
 void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
@@ -96,6 +104,20 @@ void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
 
 	// update next available time frame
 	_tMove = timeFrame + UnitData::MOVE_DURATION;
+}
+
+void UnitInterface::stop(const int endFrame)
+{
+	if(_tAttack > endFrame) // cool down still longer
+	{
+		// only change tMove, keep tAttack
+		_tMove = endFrame; 
+	}
+	else
+	{
+		_tAttack = endFrame;
+		_tMove = endFrame;
+	}
 }
 
 bool UnitInterface::isTargetInRange(const std::shared_ptr<UnitInterface> &target) const
@@ -193,10 +215,4 @@ int UnitInterface::calculateDamageTo(const int damage, const std::shared_ptr<Uni
 	dmg = dmg < 1 ? 1 : dmg;
 
 	return dmg;
-}
-
-// debug
-void UnitInterface::killSelf()
-{
-	_hitPoints = 0;
 }

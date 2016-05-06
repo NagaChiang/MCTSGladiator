@@ -4,17 +4,17 @@ using namespace MCTSG;
 
 Action::Action()
 {
-	_unit = NULL;
+	_unitID = -1;
 	_actionType = Actions::None;
-	_target = NULL;
+	_targetID = -1;
 	_time = -1;
 }
 
-Action::Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t)
+Action::Action(const int &ID, const Actions &aType, const int &targetID, const int t)
 {
-	_unit = u;
+	_unitID = ID;
 	_actionType = aType;
-	_target = uTarget;
+	_targetID = targetID;
 	_time = t;
 }
 

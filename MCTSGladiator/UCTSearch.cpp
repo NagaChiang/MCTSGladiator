@@ -100,6 +100,7 @@ Move UCTSearch::search(const State &state)
 	{
 		Logger::instance()->log(bestNode->getNumVisits());
 		Logger::instance()->log(bestNode->getNumWins());
+		Logger::instance()->log("------");
 	}
 
 	if(bestNode)
@@ -181,7 +182,6 @@ void UCTSearch::generateChildren(UCTNode &node, const State &state)
 	{
 		// find out who can do
 		int timeFrame = state.getTimeFrame();
-		int nextMinFrame = state.getNextMinFrame();
 
 		bool canAllyDo = false;
 		bool canEnemyDo = false;
@@ -282,11 +282,16 @@ void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) cons
 	// erase dead units from the unitset
 	state.eraseDeadUnits();
 
+	// update time frame
+	int minTimeFrame = state.getNextMinFrame();
+	state.setTimeFrame(minTimeFrame);
+
 	// debug
 	if(false)
 	{
-		//Logger::instance()->log(node.getParent()->getMove());
 		Logger::instance()->log(node.toString());
+		if(node.getParent())
+			Logger::instance()->log(node.getParent()->getMove());
 		Logger::instance()->log(node.getMove());
 		Logger::instance()->log(origin);
 		Logger::instance()->log(state);

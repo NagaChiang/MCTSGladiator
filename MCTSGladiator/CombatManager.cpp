@@ -50,7 +50,7 @@ void CombatManager::issueCommands(const Move &move) const
 	for(Action action : move)
 	{
 		// get real unit
-		BWAPI::Unit unit = BWAPI::Broodwar->getUnit(action.getUnit()->getID());
+		BWAPI::Unit unit = BWAPI::Broodwar->getUnit(action.getUnitID());
 
 		// null unit
 		if(!unit)
@@ -62,7 +62,10 @@ void CombatManager::issueCommands(const Move &move) const
 
 		// get properties
 		BWAPI::Position position = unit->getPosition();
-		int speed = action.getUnit()->getSpeed();
+		Unit u = _currentState.getUnit(action.getUnitID());
+		int speed = 1;
+		if(u)
+			speed = u->getSpeed();
 
 		// do action
 		switch(action.getType())
@@ -110,7 +113,7 @@ void CombatManager::issueCommands(const Move &move) const
 			case Actions::Attack:
 			{
 				// get target
-				BWAPI::Unit target = BWAPI::Broodwar->getUnit(action.getTarget()->getID());
+				BWAPI::Unit target = BWAPI::Broodwar->getUnit(action.getTargetID());
 
 				// has already been told to attack that target
 				BWAPI::UnitCommand currentCommand(unit->getLastCommand());
@@ -122,7 +125,11 @@ void CombatManager::issueCommands(const Move &move) const
 				if(target)
 				{
 					unit->attack(target);
-					action.getUnit()->attack(action.getTarget(), _currentState.getTimeFrame()); // for cooldown
+
+					// in virtual state // TODO: should we do the same thing for movement?
+					Unit unitFake = _currentState.getUnit(action.getUnitID());
+					if(unitFake)
+						unitFake->attack(NULL, _currentState.getTimeFrame()); // for cooldown
 				}
 
 				break;

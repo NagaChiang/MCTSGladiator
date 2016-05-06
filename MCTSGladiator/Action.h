@@ -20,22 +20,22 @@ namespace MCTSG
 	class Action
 	{
 
-		Unit _unit; // unit to perform the action
+		int _unitID; // index of unit to perform the action
 		Actions _actionType; // type of action
-		Unit _target; // target unit
+		int _targetID; // index of target unit
 		int _time; // e.g. wait until time frame
 
 	public:
 
 		Action();
-		Action(const Unit &u, const Actions &aType, const Unit &uTarget, const int t);
+		Action(const int &ID, const Actions &aType, const int &targetID, const int t);
 
 		std::string toString() const;
 
 		// getters
-		Unit getUnit() const { return _unit; };
+		int getUnitID() const { return _unitID; };
 		Actions getType() const { return _actionType; };
-		Unit getTarget() const { return _target; };
+		int getTargetID() const { return _targetID; };
 		int getEndFrame() const { return _time; };
 
 		// setters
