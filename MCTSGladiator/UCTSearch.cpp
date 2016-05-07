@@ -98,8 +98,10 @@ Move UCTSearch::search(const State &state)
 	// debug
 	if(bestNode && false)
 	{
-		Logger::instance()->log(bestNode->getNumVisits());
-		Logger::instance()->log(bestNode->getNumWins());
+		//Logger::instance()->log(bestNode->getNumVisits());
+		//Logger::instance()->log(bestNode->getNumWins());
+		Logger::instance()->log(state.getTimeFrame());
+		Logger::instance()->log(bestNode->getMove());
 		Logger::instance()->log("------");
 	}
 
@@ -120,7 +122,7 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 
 	int result = 0; // win = 1, lose = 0
 
-	if(node.getNumVisits() == -1)
+	if(node.getNumVisits() == -1) // first time?
 	{
 		updateState(node, state, true); // leaf
 		// score <- s.eval()
@@ -131,7 +133,7 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 	{
 		updateState(node, state, false);
 
-		if(state.isEnd())
+		if(state.isEnd()) // end?
 		{
 			result = state.isWin() ? 1 : 0;
 
@@ -142,7 +144,7 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 				Logger::instance()->log("------------");
 			}
 		}
-		else
+		else // not end yet, expand nodes
 		{
 			if(!node.hasChildren())
 				generateChildren(node, state);
@@ -243,7 +245,7 @@ UCTNode* UCTSearch::selectNode(const UCTNode &node) const
 	for(UCTNode *child : children)
 	{
 		// UCT
-		if(child->getNumVisits() == 0)
+		if(child->getNumVisits() <= 0)
 			return child;
 		else
 		{
@@ -290,7 +292,7 @@ void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) cons
 	if(false)
 	{
 		Logger::instance()->log(node.toString());
-		if(node.getParent())
+		if(node.getParent() && nodeType == UCTNodeTypes::SECOND)
 			Logger::instance()->log(node.getParent()->getMove());
 		Logger::instance()->log(node.getMove());
 		Logger::instance()->log(origin);

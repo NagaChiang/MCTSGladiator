@@ -149,8 +149,12 @@ void Logger::log(const Move &Move) const
 		fprintf(_fptrLog, "%2d ", targetID);
 
 		// time
-		fprintf(_fptrLog, "%5d\n\n", t);
+		fprintf(_fptrLog, "%5d", t);
+
+		fprintf(_fptrLog, "\n");
 	}
+
+	fprintf(_fptrLog, "\n");
 }
 
 void Logger::log(const int num) const

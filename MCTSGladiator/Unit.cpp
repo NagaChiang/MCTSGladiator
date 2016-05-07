@@ -108,16 +108,7 @@ void UnitInterface::move(const BWAPI::Position pos, const int timeFrame)
 
 void UnitInterface::stop(const int endFrame)
 {
-	if(_tAttack > endFrame) // cool down still longer
-	{
-		// only change tMove, keep tAttack
-		_tMove = endFrame; 
-	}
-	else
-	{
-		_tAttack = endFrame;
-		_tMove = endFrame;
-	}
+	_tMove = endFrame;
 }
 
 bool UnitInterface::isTargetInRange(const std::shared_ptr<UnitInterface> &target) const

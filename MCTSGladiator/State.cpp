@@ -307,13 +307,16 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		}
 
 		// assign Action type
-		if(targetsInRange.size() > 0) // has targets in range
+		if(bestTarget) // has best target in range
 		{
+			// debug
+			//BWAPI::Broodwar << unit->getNextCanAttackFrame() << "/" << _time << std::endl;
+
 			if(unit->canAttackAt(_time)) // can attack
 			{
 				// attack
 				actionType = Actions::Attack;
-				unit->attack(bestTarget, _time);
+				unit->attack(bestTarget, _time); // attack in clone unitset to record distribution
 			}
 			else // still cooldown
 			{
@@ -356,7 +359,7 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		{
 			action = Action(unit->getID(), actionType, -1, endFrame);
 		}
-
+		
 		moveNOKAV.push_back(action);
 	}
 
@@ -417,9 +420,11 @@ int State::getNextMinFrame() const
 		int canAttackFrame = unit->getNextCanAttackFrame();
 		int canMoveFrame = unit->getNextCanMoveFrame();
 
-		if(canAttackFrame < minTimeFrame)
+		if(canAttackFrame < minTimeFrame
+			&& canAttackFrame >= _time)
 			minTimeFrame = canAttackFrame;
-		if(canMoveFrame < minTimeFrame)
+		if(canMoveFrame < minTimeFrame
+			&& canMoveFrame >= _time)
 			minTimeFrame = canMoveFrame;
 	}
 
