@@ -1,6 +1,7 @@
 #pragma once
 #include <time.h>
 #include <string>
+#include "UCTNode.h"
 #include "State.h"
 #include "Action.h"
 #include "Unit.h"
@@ -30,6 +31,8 @@ namespace MCTSG
 		void log(const int num) const; // integer
 		void log(const long long num) const; // big integer
 		void log(const double num) const; // double
+
+		void logChildrenMoves(const UCTNode &node) const;
 
 	private:
 

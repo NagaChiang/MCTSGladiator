@@ -43,27 +43,6 @@ Move UCTSearch::search(const State &state)
 	// create a new node to traverse
 	UCTNode root = UCTNode();
 
-	// debug
-	/*
-	State clone1 = State(state);
-	State clone2 = State(state);
-	Action action1 = Action(clone1.getUnit(1), Actions::Attack, clone1.getUnit(3), 0);
-	//Action action2 = Action(clone2.getUnit(0), Actions::West, NULL, 0);
-	Move move1, move2;
-	move1.push_back(action1);
-	//move2.push_back(action2);
-	UCTNode node1 = UCTNode(UCTNodeTypes::SOLO, move1);
-	//UCTNode node2 = UCTNode(UCTNodeTypes::SOLO, move2);
-	updateState(node1, clone1, false);
-	//updateState(node2, clone2, false);
-	
-	Logger::instance()->log(state);
-	Logger::instance()->log(clone1);
-	//Logger::instance()->log(clone1);
-	Logger::instance()->log("------");
-	*/
-	
-
 	// traverse until time out
 	while(true)
 	{
@@ -93,15 +72,29 @@ Move UCTSearch::search(const State &state)
 			bestWinRate = winRate;
 			bestNode = node;
 		}
+
+		// debug
+		if(false)
+		{
+			Logger::instance()->log(bestNode->getWinRate());
+			Logger::instance()->log(node->getMove());
+		}
+	}
+
+	// debug
+	if(false)
+	{
+		Logger::instance()->logChildrenMoves(root);
+		Logger::instance()->log("------");
 	}
 
 	// debug
 	if(bestNode && false)
 	{
-		//Logger::instance()->log(bestNode->getNumVisits());
-		//Logger::instance()->log(bestNode->getNumWins());
-		Logger::instance()->log(state.getTimeFrame());
-		Logger::instance()->log(bestNode->getMove());
+		Logger::instance()->log(bestNode->getNumVisits());
+		Logger::instance()->log(bestNode->getNumWins());
+		//Logger::instance()->log(state.getTimeFrame());
+		//Logger::instance()->log(bestNode->getMove());
 		Logger::instance()->log("------");
 	}
 
@@ -156,11 +149,11 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 	// debug
 	if(result == 1 && false)
 	{
-		Logger::instance()->log(state);
-		Logger::instance()->log("------------");
+		/*Logger::instance()->log(state);
+		Logger::instance()->log("------------");*/
 
-		/*Logger::instance()->log(node.getNumWins());
-		Logger::instance()->log(node.getNumVisits());*/
+		Logger::instance()->log(node.getNumWins());
+		Logger::instance()->log(node.getNumVisits());
 	}
 
 	node.visit();

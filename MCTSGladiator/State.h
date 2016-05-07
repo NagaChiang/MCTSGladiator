@@ -55,5 +55,6 @@ namespace MCTSG
 		// support functions of generateNextMoves()
 		Move generateNOKAVMove(const bool forAlly) const;
 		Actions getActionTypeFromTo(const BWAPI::Position &from, const BWAPI::Position &to) const;
+		Actions getActionTypeFromToInv(const BWAPI::Position &from, const BWAPI::Position &to) const;
 	};
 }

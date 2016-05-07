@@ -114,7 +114,7 @@ void State::doAction(const Action &action)
 
 			case Actions::North:
 			{
-				BWAPI::Position dirNorth = BWAPI::Position(0, 1);
+				BWAPI::Position dirNorth = BWAPI::Position(0, -1);
 				BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
 				unit->move(posNew, _time);
 				break;
@@ -138,7 +138,7 @@ void State::doAction(const Action &action)
 
 			case Actions::South:
 			{
-				BWAPI::Position dirSouth = BWAPI::Position(0, -1);
+				BWAPI::Position dirSouth = BWAPI::Position(0, 1);
 				BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
 				unit->move(posNew, _time);
 				break;
@@ -170,81 +170,77 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 	std::vector<Move> moves;
 	Move moveNOKAV = generateNOKAVMove(forAlly);
 	moves.push_back(moveNOKAV);
-
+	
+	// generate the rest of moves
 	if(forAlly) // do not generate other moves for enemy
 	{
-		// generate the rest of moves
-		bool hasAttack = true; // still has Move containing Actions::Attack
-		bool hasMove = true; // still has Move containing Actions::Move
-		Move lastMove = moveNOKAV; // keep its values
-		for(int i = 0; i < amount - 1; i++)
+		// generate kiter move
+		if(amount > 1)
 		{
-			// copy Move from last one
-			Move move = Move(lastMove);
+			Move moveKiter = Move(moveNOKAV);
+			bool isChanged = false;
+			for(Action &action : moveKiter)
+			{
+				// replace stop with kite
+				if(action.getType() == Actions::Stop)
+				{
+					Unit unit = getUnit(action.getUnitID());
+					Unit target = getUnit(action.getTargetID());
+					Actions typeKite = getActionTypeFromToInv(unit->getPosition(), target->getPosition());
+					action.setType(typeKite);
 
+					isChanged = true;
+				}
+			}
+
+			// push
+			if(isChanged)
+				moves.push_back(moveKiter);
+		}
+
+		// replace move/stop in NOKAV with random move
+		// find all index of these types
+		std::vector<int> indexStopNMove;
+		for(unsigned int i = 0; i < moveNOKAV.size(); i++)
+		{
+			Action action = moveNOKAV.at(i);
+			Actions type = action.getType();
+
+			if(type == Actions::Stop
+				|| type == Actions::North || type == Actions::East
+				|| type == Actions::West || type == Actions::South)
+			{
+				indexStopNMove.push_back(i);
+			}
+		}
+
+		if(indexStopNMove.size() > 0)
+		{
 			// prepare random generator
 			std::default_random_engine generator;
-			std::uniform_int_distribution<int> distributionDir(1, 4); // for random direction
+			std::uniform_int_distribution<int> distributionIndex(0, indexStopNMove.size() - 1); // index
+			std::uniform_int_distribution<int> distributionDir(2, 5); // direction
 
-			// generate new Move with replacing
-			if(hasAttack) // replace Attack with Move
+			// generate the rest of moves
+			while(moves.size() < (unsigned int)amount)
 			{
-				// get actions of Actions::Attack
-				Move moveAttack;
-				for(Action &action : move)
-				{
-					if(action.getType() == Actions::Attack)
-						moveAttack.push_back(action);
-				}
+				Move cloneMove = Move(moveNOKAV);
 
-				if(moveAttack.size() > 0)
-				{
-					// random select one
-					std::uniform_int_distribution<int> distributionAtk(0, moveAttack.size() - 1);
-					int index = distributionAtk(generator);
+				// pick action
+				int index = distributionIndex(generator);
+				Action &action = cloneMove.at(indexStopNMove.at(index));
 
-					// replace
-					Action &action = moveAttack.at(index);
-					int randomDir = distributionDir(generator);
-					action.setType((Actions)randomDir);
-				}
-				else // no Attack anymore
-					hasAttack = false;
+				// replace it with random direction
+				Actions typeNew = Actions::None;
+				do
+				{
+					typeNew = (Actions)distributionDir(generator);
+				} while(typeNew == action.getType()); // TODO: check all moves?
+
+				// assign and push
+				action.setType(typeNew);
+				moves.push_back(cloneMove);
 			}
-
-			if(!hasAttack && hasMove) // replace Move with Stop // TODO: stop until?
-			{
-				// get actions of Actions::Move
-				Move moveMove;
-				for(Action &action : move)
-				{
-					Actions type = action.getType();
-					if(type >= 1 && type <= 4)
-						moveMove.push_back(action);
-				}
-
-				if(moveMove.size() > 0)
-				{
-					// random select one
-					std::uniform_int_distribution<int> distributionMove(0, moveMove.size() - 1);
-					int index = distributionMove(generator);
-
-					// replace
-					Action &action = moveMove.at(index);
-					action.setType(Actions::Stop);
-				}
-				else // no Attack anymore
-					hasMove = false;
-			}
-
-			if(!hasAttack && !hasMove) // only Actions::Stop remains
-				break;
-
-			// ready to be passed back
-			moves.push_back(move);
-
-			// keep this move's values for next
-			lastMove = move;
 		}
 	}
 
@@ -387,6 +383,31 @@ Actions State::getActionTypeFromTo(const BWAPI::Position &from, const BWAPI::Pos
 			actionType = Actions::North;
 		else // y < 0
 			actionType = Actions::South;
+	}
+
+	return actionType;
+}
+
+Actions State::getActionTypeFromToInv(const BWAPI::Position &from, const BWAPI::Position &to) const
+{
+	BWAPI::Position direction = to - from;
+	Actions actionType;
+
+	int x = direction.x;
+	int y = direction.y;
+	if(abs(x) >= abs(y)) // magnitude of x is bigger
+	{
+		if(x >= 0)
+			actionType = Actions::West;
+		else // x < 0
+			actionType = Actions::East;
+	}
+	else // magnitude of y is bigger
+	{
+		if(y >= 0)
+			actionType = Actions::South;
+		else // y < 0
+			actionType = Actions::North;
 	}
 
 	return actionType;

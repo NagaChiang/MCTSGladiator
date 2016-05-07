@@ -77,6 +77,8 @@ void Logger::log(const State &state) const
 
 	// timestamp
 	timestamp();
+
+	// title
 	fprintf(_fptrLog, "\n");
 	fprintf(_fptrLog, "\t<State>\n");
 	fprintf(_fptrLog, "\n");
@@ -126,6 +128,8 @@ void Logger::log(const Move &Move) const
 
 	// timestamp
 	timestamp();
+
+	// title
 	fprintf(_fptrLog, "\n");
 	fprintf(_fptrLog, "\t<Move>\n");
 	fprintf(_fptrLog, "\n");
@@ -186,6 +190,84 @@ void Logger::log(const double num) const
 
 	timestamp();
 	fprintf(_fptrLog, "%lf\n", num);
+}
+
+// log all children moves of this node
+void Logger::logChildrenMoves(const UCTNode &node) const
+{
+	// if not initiated
+	if(!_fptrLog)
+		return;
+
+	// timestamp
+	timestamp();
+
+	// title
+	fprintf(_fptrLog, "\n");
+	fprintf(_fptrLog, "\t<All Children Moves>\n");
+	fprintf(_fptrLog, "\n");
+
+	// log all children moves
+	std::vector<UCTNode*> children = node.getChildren();
+	for(UCTNode *child : children)
+	{
+		if(!child)
+			continue;
+
+		Move move = child->getMove();
+
+		// prefix
+		fprintf(_fptrLog, "\t\t");
+
+		// log actions in this node
+		for(Action action : move)
+		{
+			Actions type = action.getType();
+			char token;
+
+			switch(type)
+			{
+				case Actions::None:
+					token = 'N';
+					break;
+
+				case Actions::Stop:
+					token = '0';
+					break;
+
+				case Actions::North:
+					token = '1';
+					break;
+
+				case Actions::East:
+					token = '2';
+					break;
+
+				case Actions::West:
+					token = '3';
+					break;
+
+				case Actions::South:
+					token = '4';
+					break;
+
+				case Actions::Attack:
+					token = 'A';
+					break;
+
+				default:
+					token = '?';
+					break;
+			}
+
+			// log
+			fprintf(_fptrLog, "%c", token);
+		}
+
+		fprintf(_fptrLog, "\n");
+	}
+
+	fprintf(_fptrLog, "\n");
 }
 
 // support function of log state

@@ -11,6 +11,8 @@ const int UnitData::getAttackAnimFrameDuration(const BWAPI::UnitType &unitType)
 		return 7;
 	else if(unitType == BWAPI::UnitTypes::Protoss_Dragoon)
 		return 7;
+	else if(unitType == BWAPI::UnitTypes::Zerg_Zergling)
+		return 4;
 	else
 		return 0;
 }
