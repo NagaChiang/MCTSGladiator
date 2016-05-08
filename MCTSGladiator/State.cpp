@@ -172,12 +172,12 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 	moves.push_back(moveNOKAV);
 	
 	// generate the rest of moves
+	Move moveKiter = Move(moveNOKAV);
 	if(forAlly) // do not generate other moves for enemy
 	{
 		// generate kiter move
 		if(amount > 1)
 		{
-			Move moveKiter = Move(moveNOKAV);
 			bool isChanged = false;
 			for(Action &action : moveKiter)
 			{
@@ -222,9 +222,10 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 			std::uniform_int_distribution<int> distributionDir(2, 5); // direction
 
 			// generate the rest of moves
+			Move lastMove = Move(moveKiter);
 			while(moves.size() < (unsigned int)amount)
 			{
-				Move cloneMove = Move(moveNOKAV);
+				Move cloneMove = Move(lastMove);
 
 				// pick action
 				int index = distributionIndex(generator);
@@ -240,6 +241,9 @@ std::vector<Move> State::generateNextMoves(const int amount, const bool forAlly)
 				// assign and push
 				action.setType(typeNew);
 				moves.push_back(cloneMove);
+
+				// keep it for next move
+				lastMove = cloneMove;
 			}
 		}
 	}
