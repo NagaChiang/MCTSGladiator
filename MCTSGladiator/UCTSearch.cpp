@@ -76,8 +76,9 @@ Move UCTSearch::search(const State &state)
 		// debug
 		if(false)
 		{
-			Logger::instance()->log(bestNode->getWinRate());
-			Logger::instance()->log(node->getMove());
+			Logger::instance()->log(node->getNumVisits());
+			Logger::instance()->log(node->getNumWins());
+			Logger::instance()->log("-");
 		}
 	}
 
@@ -91,8 +92,8 @@ Move UCTSearch::search(const State &state)
 	// debug
 	if(bestNode && false)
 	{
-		Logger::instance()->log(bestNode->getNumVisits());
-		Logger::instance()->log(bestNode->getNumWins());
+		//Logger::instance()->log(bestNode->getNumVisits());
+		//Logger::instance()->log(bestNode->getNumWins());
 		//Logger::instance()->log(state.getTimeFrame());
 		//Logger::instance()->log(bestNode->getMove());
 		Logger::instance()->log("------");
@@ -115,7 +116,7 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 
 	int result = 0; // win = 1, lose = 0
 
-	if(node.getNumVisits() == -1) // first time?
+	if(node.getNumVisits() == 0) // first time?
 	{
 		updateState(node, state, true); // leaf
 		// score <- s.eval()

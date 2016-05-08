@@ -5,7 +5,7 @@ using namespace MCTSG;
 UCTNode::UCTNode()
 	:_type(UCTNodeTypes::SOLO),
 	_move(Move()),
-	_visits(-1),
+	_visits(0),
 	_wins(0),
 	_parent(NULL)
 {
@@ -15,7 +15,7 @@ UCTNode::UCTNode()
 UCTNode::UCTNode(UCTNodeTypes type, Move move)
 	:_type(type),
 	_move(move),
-	_visits(-1),
+	_visits(0),
 	_wins(0),
 	_parent(NULL)
 {
