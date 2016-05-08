@@ -6,9 +6,10 @@ using namespace std::chrono;
 UCTSearch::UCTSearch()
 {
 	// default
-	_params.timeLimit = std::chrono::milliseconds(40);
+	_params.timeLimit = std::chrono::milliseconds(50);
 	_params.maxChildren = 20;
 	_params.explorationConst = 1.6;
+	_params.evalMethod = EvaluationMethod::MostVisited;
 
 	// reset
 	reset();
@@ -60,25 +61,31 @@ Move UCTSearch::search(const State &state)
 	}
 
 	// return the best move (actions) of root
-	double bestWinRate = -9999.0; // -Inf
+	double bestScore = -99999.0; // -Inf
 	UCTNode *bestNode = NULL;
 	std::vector<UCTNode*> children = root.getChildren();
 	for(UCTNode *node : children)
 	{
-		double winRate = node->getWinRate();
+		// get score
+		double score;
+		if(_params.evalMethod == EvaluationMethod::WinRate)
+			score = node->getWinRate();
+		else if(_params.evalMethod == EvaluationMethod::MostVisited)
+			score = node->getNumVisits();
+		else // evaluation
+			score = node->getScore();
 
-		if(winRate > bestWinRate)
+		// compare to current best
+		if(score > bestScore)
 		{
-			bestWinRate = winRate;
+			bestScore = score;
 			bestNode = node;
 		}
 
 		// debug
 		if(false)
 		{
-			Logger::instance()->log(node->getNumVisits());
-			Logger::instance()->log(node->getNumWins());
-			Logger::instance()->log("-");
+			Logger::instance()->log(score);
 		}
 	}
 
@@ -110,16 +117,20 @@ Move UCTSearch::search(const State &state)
 		return Move();
 }
 
-int UCTSearch::traverse(UCTNode &node, State &state)
+double UCTSearch::traverse(UCTNode &node, State &state)
 {
 	_traversals++; // statistics
 
-	int result = 0; // win = 1, lose = 0
+	double result = 0; // win = 1, lose = 0
 
 	if(node.getNumVisits() == 0) // first time?
 	{
 		updateState(node, state, true); // leaf
-		// score <- s.eval()
+		
+		// only evaluate when needed
+		if(!(_params.evalMethod == EvaluationMethod::WinRate
+			|| _params.evalMethod == EvaluationMethod::MostVisited))
+			result = evaluateState(state);
 
 		_numNodeVisited++; // statistics
 	}
@@ -129,14 +140,11 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 
 		if(state.isEnd()) // end?
 		{
-			result = state.isWin() ? 1 : 0;
-
-			// debug
-			if(result == 1 && false)
-			{
-				Logger::instance()->log(state);
-				Logger::instance()->log("------------");
-			}
+			if(_params.evalMethod == EvaluationMethod::WinRate
+				|| _params.evalMethod == EvaluationMethod::MostVisited)
+				result = state.isWin() ? 1 : 0;
+			else // evaluation
+				result = evaluateState(state);
 		}
 		else // not end yet, expand nodes
 		{
@@ -147,18 +155,14 @@ int UCTSearch::traverse(UCTNode &node, State &state)
 		}
 	}
 
-	// debug
-	if(result == 1 && false)
-	{
-		/*Logger::instance()->log(state);
-		Logger::instance()->log("------------");*/
-
-		Logger::instance()->log(node.getNumWins());
-		Logger::instance()->log(node.getNumVisits());
-	}
-
+	// result
 	node.visit();
-	node.updateWins(result);
+	if(_params.evalMethod == EvaluationMethod::WinRate
+		|| _params.evalMethod == EvaluationMethod::MostVisited)
+		node.updateWin((int)result);
+	else // evaluation
+		node.updateScore(result);
+
 	return result;
 }
 
@@ -243,7 +247,14 @@ UCTNode* UCTSearch::selectNode(const UCTNode &node) const
 			return child;
 		else
 		{
-			double score = (double)child->getNumWins() / child->getNumVisits()
+			double score;
+
+			if(_params.evalMethod == EvaluationMethod::WinRate
+				|| _params.evalMethod == EvaluationMethod::MostVisited)
+				score = (double)child->getNumWins() / child->getNumVisits()
+					+ _params.explorationConst * sqrt(log((double)node.getNumVisits()) / child->getNumVisits());
+			else // evaluation
+				score = (double)child->getScore() / child->getNumVisits()
 				+ _params.explorationConst * sqrt(log((double)node.getNumVisits()) / child->getNumVisits());
 
 			// better one
@@ -293,4 +304,76 @@ void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) cons
 		Logger::instance()->log(state);
 		Logger::instance()->log("---------");
 	}
+}
+
+double UCTSearch::evaluateState(const State &state) const
+{
+	double score = 0.0;
+	double allyTotal = 0;
+	double enemyTotal = 0;
+	Unitset allUnits = state.getUnits();
+
+	switch(_params.evalMethod)
+	{
+		case EvaluationMethod::EvalHP:
+
+			for(auto &itr : allUnits)
+			{
+				Unit unit = itr.second;
+				double hp = unit->getHitPoints() + unit->getShields();
+
+				if(unit->isAlly())
+					allyTotal += hp;
+				else // enemy
+					enemyTotal += hp;
+			}
+
+			score = allyTotal - enemyTotal;
+			break;
+
+		case EvaluationMethod::EvalLTD:
+
+			for(auto &itr : allUnits)
+			{
+				Unit unit = itr.second;
+				double hp = unit->getHitPoints() + unit->getShields();
+				double dpf = unit->getGroundWeaponDPF();
+
+				if(unit->isAlly())
+					allyTotal += hp * dpf;
+				else // enemy
+					enemyTotal += hp * dpf;
+			}
+
+			score = allyTotal - enemyTotal;
+			break;
+
+		case EvaluationMethod::EvalLTD2:
+
+			for(auto &itr : allUnits)
+			{
+				Unit unit = itr.second;
+				double hp = unit->getHitPoints() + unit->getShields();
+				double dpf = unit->getGroundWeaponDPF();
+
+				if(unit->isAlly())
+				{
+					if(hp > 0)
+						allyTotal += sqrt(hp) * dpf;
+				}
+				else // enemy
+				{
+					if(hp > 0)
+						enemyTotal += sqrt(hp) * dpf;
+				}
+			}
+
+			score = allyTotal - enemyTotal;
+			break;
+
+		default:
+			break;
+	}
+
+	return score;
 }

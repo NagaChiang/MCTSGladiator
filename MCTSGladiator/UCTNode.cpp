@@ -7,6 +7,7 @@ UCTNode::UCTNode()
 	_move(Move()),
 	_visits(0),
 	_wins(0),
+	_score(-99999), // -Inf
 	_parent(NULL)
 {
 	// to be root
@@ -17,6 +18,7 @@ UCTNode::UCTNode(UCTNodeTypes type, Move move)
 	_move(move),
 	_visits(0),
 	_wins(0),
+	_score(-99999), // -Inf
 	_parent(NULL)
 {
 	
