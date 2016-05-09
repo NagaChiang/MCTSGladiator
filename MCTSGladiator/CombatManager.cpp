@@ -21,7 +21,6 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 
 	// log init state
 	Logger::instance()->log("CombatManager has been initiated!");
-	//Logger::instance()->log(_currentState);
 
 	// UCT Search
 	UCTSearchParams params;

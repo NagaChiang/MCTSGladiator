@@ -309,9 +309,6 @@ Move State::generateNOKAVMove(const bool forAlly) const
 		// assign Action type
 		if(bestTarget) // has best target in range
 		{
-			// debug
-			//BWAPI::Broodwar << unit->getNextCanAttackFrame() << "/" << _time << std::endl;
-
 			if(unit->canAttackAt(_time)) // can attack
 			{
 				// attack

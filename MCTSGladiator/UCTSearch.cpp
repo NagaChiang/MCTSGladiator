@@ -81,29 +81,6 @@ Move UCTSearch::search(const State &state)
 			bestScore = score;
 			bestNode = node;
 		}
-
-		// debug
-		if(false)
-		{
-			Logger::instance()->log(score);
-		}
-	}
-
-	// debug
-	if(false)
-	{
-		Logger::instance()->logChildrenMoves(root);
-		Logger::instance()->log("------");
-	}
-
-	// debug
-	if(bestNode && false)
-	{
-		//Logger::instance()->log(bestNode->getNumVisits());
-		//Logger::instance()->log(bestNode->getNumWins());
-		//Logger::instance()->log(state.getTimeFrame());
-		//Logger::instance()->log(bestNode->getMove());
-		Logger::instance()->log("------");
 	}
 
 	if(bestNode)
@@ -272,9 +249,6 @@ UCTNode* UCTSearch::selectNode(const UCTNode &node) const
 // only update when second/solo/leaf node appears
 void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) const
 {
-	// debug
-	State origin = State(state);
-
 	// make moves
 	UCTNodeTypes nodeType = node.getNodeType();
 	if(nodeType != UCTNodeTypes::FIRST || isLeaf)
@@ -292,18 +266,6 @@ void UCTSearch::updateState(const UCTNode &node, State &state, bool isLeaf) cons
 	// update time frame
 	int minTimeFrame = state.getNextMinFrame();
 	state.setTimeFrame(minTimeFrame);
-
-	// debug
-	if(false)
-	{
-		Logger::instance()->log(node.toString());
-		if(node.getParent() && nodeType == UCTNodeTypes::SECOND)
-			Logger::instance()->log(node.getParent()->getMove());
-		Logger::instance()->log(node.getMove());
-		Logger::instance()->log(origin);
-		Logger::instance()->log(state);
-		Logger::instance()->log("---------");
-	}
 }
 
 double UCTSearch::evaluateState(const State &state) const
