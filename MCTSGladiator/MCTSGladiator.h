@@ -1,7 +1,10 @@
 #pragma once
 #include <BWAPI.h>
+#include <iostream>
 #include "CombatManager.h"
 #include "Logger.h"
+#include "ConfigParser.h"
+#include "GameCounter.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -38,6 +41,6 @@ namespace MCTSG
 		CombatManager combatMgr;
 
 		bool _isNoGUIMode;
-		bool _isLogWins;
+		bool _isLogWinMode;
 	};
 }

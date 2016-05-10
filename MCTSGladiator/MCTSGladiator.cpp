@@ -1,5 +1,4 @@
 #include "MCTSGladiator.h"
-#include <iostream>
 
 using namespace BWAPI;
 using namespace Filter;
@@ -7,13 +6,17 @@ using namespace MCTSG;
 
 MCTSGladiator::MCTSGladiator()
 	:_isNoGUIMode(FALSE),
-	_isLogWins(FALSE)
+	_isLogWinMode(FALSE)
 {
 
 }
 
 void MCTSGladiator::onStart()
 {
+	// get mode
+	_isNoGUIMode = ConfigParser::instance()->isNoGUIMode();
+	_isLogWinMode = ConfigParser::instance()->isLogWinMode();
+
 	// No GUI mode
 	if(_isNoGUIMode)
 	{
@@ -54,10 +57,19 @@ void MCTSGladiator::onStart()
 	}
 	else // if this is not a replay
 	{
-		// Retrieve you and your enemy's races. enemy() will just return the first enemy.
-		// If you wish to deal with multiple enemies then you must use enemies().
-		//if(Broodwar->enemy()) // First make sure there is an enemy
-			//Broodwar << "The matchup is " << Broodwar->self()->getRace() << " vs " << Broodwar->enemy()->getRace() << std::endl;
+		// get the number of games to run
+		int maxGames = ConfigParser::instance()->getNumGames();
+
+		// get current game count
+		int gameCount = GameCounter::instance()->getGameCount();
+		Broodwar << "[ Game " << gameCount << " ]" << std::endl;
+
+		// already run out of games
+		if(gameCount >= maxGames)
+		{
+			GameCounter::instance()->end();
+			exit(0); // exit
+		}
 
 		// set units for combat manager
 		combatMgr.set(Broodwar->getFrameCount(), Broodwar->getAllUnits());
@@ -67,17 +79,28 @@ void MCTSGladiator::onStart()
 
 void MCTSGladiator::onEnd(bool isWinner)
 {
-	if(_isLogWins)
+	// log result
+	if(_isLogWinMode)
 	{
 		if(isWinner) // win
-		{
 			Logger::instance()->log(1);
-		}
 		else // lose
-		{
 			Logger::instance()->log(0);
-		}
 	}
+
+	// game count
+	GameCounter::instance()->count(); // ++
+	int maxGames = ConfigParser::instance()->getNumGames();
+	int gameCount = GameCounter::instance()->getGameCount();
+
+	// already run out of games
+	if(gameCount >= maxGames)
+	{
+		GameCounter::instance()->end();
+		exit(0); // exit
+	}
+	else // still more to go!
+		GameCounter::instance()->save();
 }
 
 void MCTSGladiator::onFrame()

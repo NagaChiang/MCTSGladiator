@@ -14,7 +14,7 @@ ConfigParser::ConfigParser()
 
 ConfigParser::~ConfigParser()
 {
-	// close the log
+	// close
 	if(_fptrCfg)
 		fclose(_fptrCfg);
 }
@@ -85,6 +85,24 @@ void ConfigParser::parseIn()
 				int index;
 				fscanf(_fptrCfg, "%d", &index);
 				_params.evalMethod = (EvaluationMethod)index;
+			}
+			else if(word == "numGames")
+			{
+				int num;
+				fscanf(_fptrCfg, "%d", &num);
+				_numGames = num;
+			}
+			else if(word == "LogWinMode")
+			{
+				int isOn;
+				fscanf(_fptrCfg, "%d", &isOn);
+				_isLogWinMode = isOn > 0 ? true : false;
+			}
+			else if(word == "NoGUIMode")
+			{
+				int isOn;
+				fscanf(_fptrCfg, "%d", &isOn);
+				_isNoGUIMode = isOn > 0 ? true : false;
 			}
 			else
 				BWAPI::Broodwar << "ERROR: Invalid syntax in config file." << std::endl;

@@ -16,8 +16,11 @@ namespace MCTSG
 		// config file
 		FILE *_fptrCfg;
 
-		// UCT params
-		UCTSearchParams _params;
+		// configs
+		UCTSearchParams _params; // UCT params
+		int _numGames; // number of games to run
+		bool _isLogWinMode;
+		bool _isNoGUIMode;
 
 	public:
 
@@ -26,7 +29,11 @@ namespace MCTSG
 
 		static ConfigParser* instance();
 
+		// getters
 		UCTSearchParams getUCTParams() const { return _params; };
+		int getNumGames() const { return _numGames; };
+		bool isLogWinMode() const { return _isLogWinMode; };
+		bool isNoGUIMode() const { return _isNoGUIMode; };
 
 	private:
 

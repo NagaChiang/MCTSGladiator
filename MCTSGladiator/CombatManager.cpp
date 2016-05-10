@@ -19,16 +19,22 @@ void CombatManager::set(const int t, const BWAPI::Unitset &units)
 	// set new state
 	_currentState.set(t, units);
 
-	// log init state
-	Logger::instance()->log("CombatManager has been initiated!");
-
 	// UCT Search
 	UCTSearchParams params = ConfigParser::instance()->getUCTParams();
 	_uctSearch = UCTSearch(params);
 
+	// display config
 	BWAPI::Broodwar << "Max Children: " << params.maxChildren << std::endl;
 	BWAPI::Broodwar << "Exploration Constant: " << params.explorationConst << std::endl;
 	BWAPI::Broodwar << "Evaluation Method: " << (int)params.evalMethod << std::endl;
+
+	// log
+	/*
+	Logger::instance()->log("CombatManager has been initiated!");
+	Logger::instance()->log(params.maxChildren);
+	Logger::instance()->log(params.explorationConst);
+	Logger::instance()->log((int)params.evalMethod);
+	*/
 }
 
 // update the real state for manager; also track on status of units, such as attack CD

@@ -95,6 +95,7 @@
     <ClCompile Include="CombatManager.cpp" />
     <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="Dll.cpp" />
+    <ClCompile Include="GameCounter.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MCTSGladiator.cpp" />
     <ClCompile Include="State.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="Action.h" />
     <ClInclude Include="CombatManager.h" />
     <ClInclude Include="ConfigParser.h" />
+    <ClInclude Include="GameCounter.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MCTSGladiator.h" />
     <ClInclude Include="State.h" />
