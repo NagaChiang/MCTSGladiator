@@ -4,6 +4,7 @@
 #include "Unit.h"
 #include "Logger.h"
 #include "UCTSearch.h"
+#include "ConfigParser.h"
 
 namespace MCTSG
 {

@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="CombatManager.cpp" />
+    <ClCompile Include="ConfigParser.cpp" />
     <ClCompile Include="Dll.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="MCTSGladiator.cpp" />
@@ -106,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="Action.h" />
     <ClInclude Include="CombatManager.h" />
+    <ClInclude Include="ConfigParser.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="MCTSGladiator.h" />
     <ClInclude Include="State.h" />
