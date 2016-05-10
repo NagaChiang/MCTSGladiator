@@ -24,6 +24,8 @@ namespace MCTSG
 
 		static Logger* instance();
 
+		void close();
+
 		void log(const std::string &str) const; // std::string
 		void log(const State &state) const; // state
 		void log(const Unit &unit) const; // Unit

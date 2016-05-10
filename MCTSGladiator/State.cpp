@@ -381,9 +381,9 @@ Actions State::getActionTypeFromTo(const BWAPI::Position &from, const BWAPI::Pos
 	else // magnitude of y is bigger
 	{
 		if(y >= 0)
-			actionType = Actions::North;
-		else // y < 0
 			actionType = Actions::South;
+		else // y < 0
+			actionType = Actions::North;
 	}
 
 	return actionType;
@@ -406,9 +406,9 @@ Actions State::getActionTypeFromToInv(const BWAPI::Position &from, const BWAPI::
 	else // magnitude of y is bigger
 	{
 		if(y >= 0)
-			actionType = Actions::South;
-		else // y < 0
 			actionType = Actions::North;
+		else // y < 0
+			actionType = Actions::South;
 	}
 
 	return actionType;

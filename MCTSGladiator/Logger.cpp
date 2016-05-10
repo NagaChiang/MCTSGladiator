@@ -4,7 +4,6 @@ using namespace MCTSG;
 
 Logger* Logger::_ptrInstance = NULL; // static
 
-//const std::string LOG_PATH = "D:/Phate/Temp/Thesis/MCTSGladiator/Release/log.txt";
 const std::string LOG_PATH = "log.txt";
 
 Logger::Logger()
@@ -14,9 +13,7 @@ Logger::Logger()
 
 Logger::~Logger()
 {
-	// close the log
-	if(_fptrLog)
-		fclose(_fptrLog);
+	close();
 }
 
 Logger* Logger::instance()
@@ -28,6 +25,13 @@ Logger* Logger::instance()
 	}
 
 	return _ptrInstance;
+}
+
+void Logger::close()
+{
+	// close the log
+	if(_fptrLog)
+		fclose(_fptrLog);
 }
 
 // initiate the log if hasn't been

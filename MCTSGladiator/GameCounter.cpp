@@ -66,14 +66,20 @@ void GameCounter::save()
 {
 	if(_fptrCtr)
 	{
-		// back to beginning
-		rewind(_fptrCtr);
-
-		// write to the file
-		fprintf(_fptrCtr, "%d", _gameCount);
-
-		// close the file
+		// close first
 		fclose(_fptrCtr);
+
+		// re-open to clear the file
+		_fptrCtr = fopen(_pathCtr.c_str(), "w");
+
+		if(_fptrCtr)
+		{
+			// write to the file
+			fprintf(_fptrCtr, "%d", _gameCount);
+
+			// close the file
+			fclose(_fptrCtr);
+		}
 	}
 }
 
@@ -89,6 +95,7 @@ void GameCounter::end()
 		_fptrCtr = fopen(_pathCtr.c_str(), "w");
 
 		// close it again
-		fclose(_fptrCtr);
+		if(_fptrCtr)
+			fclose(_fptrCtr);
 	}
 }

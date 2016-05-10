@@ -28,6 +28,8 @@ namespace MCTSG
 	private:
 
 		void issueCommands(const Move &move) const;
+		void smartAttack(const BWAPI::Unit &unit, const BWAPI::Unit &target) const;
+		void smartMove(const BWAPI::Unit &unit, const BWAPI::Position &pos) const;
 
 	};
 }

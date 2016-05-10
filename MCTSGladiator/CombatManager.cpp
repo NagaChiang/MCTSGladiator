@@ -86,9 +86,9 @@ void CombatManager::issueCommands(const Move &move) const
 
 			case Actions::North:
 			{
-				BWAPI::Position dirNorth = BWAPI::Position(0, 1);
+				BWAPI::Position dirNorth = BWAPI::Position(0, -1);
 				BWAPI::Position posNew = position + (dirNorth * speed * UnitData::MOVE_DURATION);
-				unit->move(posNew);
+				smartMove(unit, posNew);
 				break;
 			}
 
@@ -96,7 +96,7 @@ void CombatManager::issueCommands(const Move &move) const
 			{
 				BWAPI::Position dirEast = BWAPI::Position(1, 0);
 				BWAPI::Position posNew = position + (dirEast * speed * UnitData::MOVE_DURATION);
-				unit->move(posNew);
+				smartMove(unit, posNew);
 				break;
 			}
 
@@ -104,15 +104,15 @@ void CombatManager::issueCommands(const Move &move) const
 			{
 				BWAPI::Position dirWest = BWAPI::Position(-1, 0);
 				BWAPI::Position posNew = position + (dirWest * speed * UnitData::MOVE_DURATION);
-				unit->move(posNew);
+				smartMove(unit, posNew);
 				break;
 			}
 
 			case Actions::South:
 			{
-				BWAPI::Position dirSouth = BWAPI::Position(0, -1);
+				BWAPI::Position dirSouth = BWAPI::Position(0, 1);
 				BWAPI::Position posNew = position + (dirSouth * speed * UnitData::MOVE_DURATION);
-				unit->move(posNew);
+				smartMove(unit, posNew);
 				break;
 			}
 
@@ -121,22 +121,8 @@ void CombatManager::issueCommands(const Move &move) const
 				// get target
 				BWAPI::Unit target = BWAPI::Broodwar->getUnit(action.getTargetID());
 
-				// has already been told to attack that target
-				BWAPI::UnitCommand currentCommand(unit->getLastCommand());
-				if(currentCommand.getType() == BWAPI::UnitCommandTypes::Attack_Unit
-					&& currentCommand.getTarget() == target)
-					continue;
-
-				// attack
-				if(target)
-				{
-					unit->attack(target);
-
-					// in virtual state // TODO: should we do the same thing for movement?
-					Unit unitFake = _currentState.getUnit(action.getUnitID());
-					if(unitFake)
-						unitFake->attack(NULL, _currentState.getTimeFrame()); // for cooldown
-				}
+				// smart attack
+				smartAttack(unit, target);
 
 				break;
 			}
@@ -146,4 +132,42 @@ void CombatManager::issueCommands(const Move &move) const
 				break;
 		}
 	}
+}
+
+void CombatManager::smartAttack(const BWAPI::Unit &unit, const BWAPI::Unit &target) const
+{
+	// check valid
+	if(!unit || !target)
+		return;
+
+	// has already been told to attack that target
+	BWAPI::UnitCommand currentCommand(unit->getLastCommand());
+	if(currentCommand.getType() == BWAPI::UnitCommandTypes::Attack_Unit
+		&& currentCommand.getTarget() == target)
+		return;
+
+	// attack
+	unit->attack(target);
+
+	// for virtual state's cooldown
+	// TODO: should we do the same thing for movement?
+	Unit unitFake = _currentState.getUnit(unit->getID());
+	if(unitFake)
+		unitFake->attack(NULL, _currentState.getTimeFrame()); // for cooldown
+}
+
+void CombatManager::smartMove(const BWAPI::Unit &unit, const BWAPI::Position &pos) const
+{
+	// check valid
+	if(!unit || !pos.isValid())
+		return;
+
+	// has already been told to move to there
+	BWAPI::UnitCommand currentCommand(unit->getLastCommand());
+	if(currentCommand.getType() == BWAPI::UnitCommandTypes::Move
+		&& currentCommand.getTargetPosition() == pos)
+		return;
+
+	// move
+	unit->move(pos);
 }

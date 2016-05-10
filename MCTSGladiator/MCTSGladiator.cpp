@@ -62,7 +62,7 @@ void MCTSGladiator::onStart()
 
 		// get current game count
 		int gameCount = GameCounter::instance()->getGameCount();
-		Broodwar << "[ Game " << gameCount << " ]" << std::endl;
+		Broodwar << "[ Game " << gameCount + 1 << " ]" << std::endl;
 
 		// already run out of games
 		if(gameCount >= maxGames)
@@ -101,6 +101,9 @@ void MCTSGladiator::onEnd(bool isWinner)
 	}
 	else // still more to go!
 		GameCounter::instance()->save();
+
+	// close the log
+	Logger::instance()->close();
 }
 
 void MCTSGladiator::onFrame()
