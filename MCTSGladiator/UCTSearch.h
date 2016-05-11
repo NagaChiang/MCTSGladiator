@@ -12,7 +12,6 @@ namespace MCTSG
 {
 	enum EvaluationMethod
 	{
-		MostVisited,
 		WinRate,
 		EvalHP, 
 		EvalLTD, // Life-Time Damage, HP * dpf

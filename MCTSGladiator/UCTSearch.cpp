@@ -9,7 +9,7 @@ UCTSearch::UCTSearch()
 	_params.timeLimit = std::chrono::milliseconds(50);
 	_params.maxChildren = 20;
 	_params.explorationConst = 1.6;
-	_params.evalMethod = EvaluationMethod::MostVisited;
+	_params.evalMethod = EvaluationMethod::WinRate;
 
 	// reset
 	reset();
@@ -68,12 +68,7 @@ Move UCTSearch::search(const State &state)
 	{
 		// get score
 		double score;
-		if(_params.evalMethod == EvaluationMethod::WinRate)
-			score = node->getWinRate();
-		else if(_params.evalMethod == EvaluationMethod::MostVisited)
-			score = node->getNumVisits();
-		else // evaluation
-			score = node->getScore();
+		score = node->getNumVisits();
 
 		// compare to current best
 		if(score > bestScore)
@@ -105,8 +100,7 @@ double UCTSearch::traverse(UCTNode &node, State &state)
 		updateState(node, state, true); // leaf
 		
 		// only evaluate when needed
-		if(!(_params.evalMethod == EvaluationMethod::WinRate
-			|| _params.evalMethod == EvaluationMethod::MostVisited))
+		if(!_params.evalMethod == EvaluationMethod::WinRate)
 			result = evaluateState(state);
 
 		_numNodeVisited++; // statistics
@@ -117,8 +111,7 @@ double UCTSearch::traverse(UCTNode &node, State &state)
 
 		if(state.isEnd()) // end?
 		{
-			if(_params.evalMethod == EvaluationMethod::WinRate
-				|| _params.evalMethod == EvaluationMethod::MostVisited)
+			if(_params.evalMethod == EvaluationMethod::WinRate)
 				result = state.isWin() ? 1 : 0;
 			else // evaluation
 				result = evaluateState(state);
@@ -134,8 +127,7 @@ double UCTSearch::traverse(UCTNode &node, State &state)
 
 	// result
 	node.visit();
-	if(_params.evalMethod == EvaluationMethod::WinRate
-		|| _params.evalMethod == EvaluationMethod::MostVisited)
+	if(_params.evalMethod == EvaluationMethod::WinRate)
 		node.updateWin((int)result);
 	else // evaluation
 		node.updateScore(result);
@@ -224,14 +216,15 @@ UCTNode* UCTSearch::selectNode(const UCTNode &node) const
 			return child;
 		else
 		{
+			double eval;
 			double score;
 
-			if(_params.evalMethod == EvaluationMethod::WinRate
-				|| _params.evalMethod == EvaluationMethod::MostVisited)
-				score = (double)child->getNumWins() / child->getNumVisits()
-					+ _params.explorationConst * sqrt(log((double)node.getNumVisits()) / child->getNumVisits());
+			if(_params.evalMethod == EvaluationMethod::WinRate)
+				eval = child->getNumWins();
 			else // evaluation
-				score = (double)child->getScore() / child->getNumVisits()
+				eval = child->getScore();
+
+			score = eval / child->getNumVisits()
 				+ _params.explorationConst * sqrt(log((double)node.getNumVisits()) / child->getNumVisits());
 
 			// better one
