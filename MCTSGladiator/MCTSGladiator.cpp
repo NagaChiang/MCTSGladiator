@@ -92,17 +92,23 @@ void MCTSGladiator::onEnd(bool isWinner)
 	int maxGames = ConfigParser::instance()->getNumGames();
 	int gameCount = GameCounter::instance()->getGameCount();
 
+	// close the log
+	Logger::instance()->close();
+
 	// already run out of games
 	if(gameCount >= maxGames)
 	{
 		GameCounter::instance()->end();
-		exit(0); // exit
+
+		// kill Chaoslauncher
+		while(!system(NULL)) {} // wait
+		system("taskkill /F /T /IM Chaoslauncher.exe");
+
+		// kill self
+		exit(0);
 	}
 	else // still more to go!
 		GameCounter::instance()->save();
-
-	// close the log
-	Logger::instance()->close();
 }
 
 void MCTSGladiator::onFrame()

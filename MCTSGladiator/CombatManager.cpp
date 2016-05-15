@@ -140,6 +140,10 @@ void CombatManager::smartAttack(const BWAPI::Unit &unit, const BWAPI::Unit &targ
 	if(!unit || !target)
 		return;
 
+	// still attacking
+	if(unit->isAttackFrame())
+		return;
+
 	// has already been told to attack that target
 	BWAPI::UnitCommand currentCommand(unit->getLastCommand());
 	if(currentCommand.getType() == BWAPI::UnitCommandTypes::Attack_Unit
@@ -163,10 +167,12 @@ void CombatManager::smartMove(const BWAPI::Unit &unit, const BWAPI::Position &po
 		return;
 
 	// has already been told to move to there
+	/*
 	BWAPI::UnitCommand currentCommand(unit->getLastCommand());
 	if(currentCommand.getType() == BWAPI::UnitCommandTypes::Move
 		&& currentCommand.getTargetPosition() == pos)
 		return;
+	*/
 
 	// move
 	unit->move(pos);
