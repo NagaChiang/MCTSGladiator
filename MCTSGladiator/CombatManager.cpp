@@ -174,6 +174,22 @@ void CombatManager::smartMove(const BWAPI::Unit &unit, const BWAPI::Position &po
 		return;
 	*/
 
+	// adjust destination to avoid collision
+	BWAPI::Position posAdjusted = pos;
+	Unit fakeUnit = _currentState.getUnit(unit->getID());
+	if(fakeUnit)
+	{
+		int rad = fakeUnit->getRadius();
+		BWAPI::Unitset unitsIn = BWAPI::Broodwar->getUnitsInRadius(pos, rad);
+
+		// position already occupied
+		if(unitsIn.size() > 0)
+		{
+			BWAPI::Position vec = pos - unit->getPosition();
+			posAdjusted = unit->getPosition() + vec + vec;
+		}
+	}
+
 	// move
-	unit->move(pos);
+	unit->move(posAdjusted);
 }

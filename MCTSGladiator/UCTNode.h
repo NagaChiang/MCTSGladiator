@@ -38,6 +38,9 @@ namespace MCTSG
 
 		std::string toString() const; // convert node type to string
 
+		// condition
+		bool isRoot() const { return _parent == NULL ? true : false; };
+
 		// getters
 		Move getMove() const { return _move; };
 		UCTNodeTypes getNodeType() const { return _type; };
