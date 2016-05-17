@@ -176,6 +176,7 @@ void CombatManager::smartMove(const BWAPI::Unit &unit, const BWAPI::Position &po
 
 	// adjust destination to avoid collision
 	BWAPI::Position posAdjusted = pos;
+	/*
 	Unit fakeUnit = _currentState.getUnit(unit->getID());
 	if(fakeUnit)
 	{
@@ -189,6 +190,7 @@ void CombatManager::smartMove(const BWAPI::Unit &unit, const BWAPI::Position &po
 			posAdjusted = unit->getPosition() + vec + vec;
 		}
 	}
+	*/
 
 	// move
 	unit->move(posAdjusted);
