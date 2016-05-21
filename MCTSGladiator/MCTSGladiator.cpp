@@ -85,15 +85,15 @@ void MCTSGladiator::onEnd(bool isWinner)
 			Logger::instance()->log(1);
 		else // lose
 			Logger::instance()->log(0);
+
+		// close the log
+		Logger::instance()->close();
 	}
 
 	// game count
 	GameCounter::instance()->count(); // ++
 	int maxGames = ConfigParser::instance()->getNumGames();
 	int gameCount = GameCounter::instance()->getGameCount();
-
-	// close the log
-	Logger::instance()->close();
 
 	// already run out of games
 	if(gameCount >= maxGames)
